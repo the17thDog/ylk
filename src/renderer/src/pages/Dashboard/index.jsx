@@ -1,11 +1,11 @@
 import { useRef, useState } from "react"
-import { Tabs } from "antd"
+import { Tabs, Button } from "antd"
+import { useNavigate } from "react-router-dom"
 import { TAB_LABEL, TAB_TYPE } from "./constants"
 import SearchBar from "./components/SearchBar"
 import Word from "./components/Word"
 import Article from "./components/Article"
 import Phrase from "./components/Phrase"
-
 
 import styles from './index.module.less'
 
@@ -13,13 +13,24 @@ const DashBoard = () => {
   const [tabType, setTabType] = useState(TAB_TYPE.Word)
   const [searchInfo, setSearchInfo] = useState({})
   const searchRef = useRef()
+  const navigate = useNavigate()
 
   const handleSearch = () => {
 
   }
 
+  const handleClick = () => {
+    navigate('/settings/class')
+  }
+
   return (
     <div className={styles.dashboard_wrapper}>
+      <Button
+        type="link"
+        style={{ position: 'absolute', top: 0 }}
+        onClick={handleClick}
+      >to manager</Button>
+
       <div className={styles.search_wrapper}>
         <SearchBar
           ref={searchRef}
