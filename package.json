@@ -20,6 +20,7 @@
     "@electron-toolkit/preload": "^2.0.0",
     "@electron-toolkit/utils": "^2.0.0",
     "antd": "^5.12.1",
+    "axios": "^1.6.4",
     "clsx": "^2.0.0",
     "react-router-dom": "^6.20.1"
   },
