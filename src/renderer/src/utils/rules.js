@@ -4,3 +4,4 @@ export function requireRule(msg) {
     message: msg || '不能为空'
   }
 }
+

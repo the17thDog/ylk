@@ -1,10 +1,31 @@
 import { useEffect } from "react"
 import { Modal, Form, Input } from "antd"
 import { requireRule } from "@/utils/rules"
+import { requestCreateClass } from "@/apis/classManager"
 
 export const EditType = {
   Create: 'create',
   Modify: 'modify'
+}
+
+/**
+ * @returns {import("antd/es/form").Rule}
+ */
+export function classRule() {
+  return {
+    message: '请输入正确的班级，4个字以内',
+    validator(_, val) {
+
+      if (!val) {
+        return Promise.resolve()
+      }
+
+      const pattern = /^(\w{1,4})(,\w{1,4})*$/
+      const match = val.match(pattern)
+
+      return match ? Promise.resolve() : Promise.reject()
+    }
+  }
 }
 
 const ClassEditor = (props) => {
@@ -20,11 +41,16 @@ const ClassEditor = (props) => {
       if (isModify) {
         form.setFieldValue('content', content)
       }
+    } else {
+      form.setFieldsValue(['content'])
     }
   }, [open])
 
   const handleOk = async () => {
     await form.validateFields()
+    await requestCreateClass({
+      ...form.getFieldsValue()
+    })
 
     onOk()
   }
@@ -43,14 +69,13 @@ const ClassEditor = (props) => {
     >
       <Form form={form}>
         <Form.Item
-          name="content"
-          rules={[requireRule('笔记不能为空')]}
+          name="class"
+          label="班级"
+          rules={[requireRule('班级不能为空'), classRule()]}
         >
-          <Input
-            placeholder="请输入笔记"
+          <Input.TextArea
+            placeholder="请输入班级"
             rows={8}
-            showCount
-            maxLength={300}
           />
         </Form.Item>
       </Form>

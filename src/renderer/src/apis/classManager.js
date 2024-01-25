@@ -1,7 +1,6 @@
 import request from './request'
 
 export function requestClasses(params) {
-  console.log('params :', params);
   const data = [
     {
       key: '1',
@@ -51,6 +50,51 @@ export function requestClasses(params) {
     data: {
       list: data,
       total: parseInt(Math.random() * 100)
+    }
+  })
+}
+
+export function requestCreateClass(params) {
+  return Promise.resolve()
+
+  return request({
+    url: '',
+    method: 'post',
+    data: {
+      ...params
+    }
+  })
+}
+
+export function requestDeleteClass(id) {
+  return Promise.resolve()
+
+  return request({
+    url: '',
+    data: {
+      id
+    }
+  })
+}
+
+export function requestDisableClass(id) {
+  return Promise.resolve()
+
+  return request({
+    url: '',
+    data: {
+      id
+    }
+  })
+}
+
+export function requestEnableClass(id) {
+  return Promise.resolve()
+
+  return request({
+    url: '',
+    data: {
+      id
     }
   })
 }

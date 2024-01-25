@@ -1,8 +1,10 @@
 import { useEffect, useState } from "react"
 import { Table, Select, Form, Button, Tag } from "antd"
 import { SearchOutlined, PlusCircleTwoTone } from '@ant-design/icons'
-import { requestClasses } from "@/apis/classManager"
-import { filterEmptyField } from '@/utils'
+import { requestClasses, requestDeleteClass, requestDisableClass, requestEnableClass } from "@/apis/classManager"
+import { filterEmptyField, showConfirm } from '@/utils'
+
+import ClassEditor, { EditType } from "./ClassEditor"
 
 const Status = {
   Disabled: 0,
@@ -17,6 +19,11 @@ const StatusLabel = {
 const ClassManager = () => {
   const [form] = Form.useForm()
   const [list, setList] = useState([])
+  const [editor, setEditor] = useState({
+    visible: false,
+    type: EditType.Create,
+    data: {}
+  })
   const [pagin, setPagin] = useState({
     pageNo: 1,
     pageSize: 10,
@@ -27,7 +34,8 @@ const ClassManager = () => {
     fetchList()
   }, [pagin.pageNo])
 
-  const fetchList = async (filter) => {
+  const fetchList = async () => {
+    const filter = form.getFieldsValue()
     const params = { ...pagin, ...filter }
 
     const { data } = await requestClasses(filterEmptyField(params))
@@ -39,28 +47,44 @@ const ClassManager = () => {
     })
   }
 
-  const handleSearch = async () => {
-    const params = form.getFieldsValue()
+  const handleEnable = async (row) => {
+    await requestEnableClass(row.id)
 
-    fetchList(params)
+    fetchList()
   }
 
-  const handleOpen = (row) => {
-    console.log('row :', row);
+  const handleDisabled = async (row) => {
+    await requestDisableClass(row.id)
+
+    fetchList()
   }
 
-  const handleDisabled = (row) => {
-    console.log('row :', row);
-  }
+  const handleDelete = async (row) => {
+    await showConfirm({ content: '该班级下所有账号也会被删除，确认要删除该班级吗？' })
+    await requestDeleteClass()
 
-  const handleDelete = (row) => {
-    console.log('row :', row);
+    fetchList()
   }
 
   const handleChange = ({ current }) => {
     setPagin({
       ...pagin,
       pageNo: current
+    })
+  }
+
+  const handleClose = () => {
+    setEditor({
+      ...editor,
+      visible: false,
+    })
+  }
+
+  const handleCreate = () => {
+    setEditor({
+      visible: true,
+      type: EditType.Create,
+      data: {}
     })
   }
 
@@ -93,7 +117,7 @@ const ClassManager = () => {
       render(_, row) {
         return <>
           { row.status === Status.Disabled
-            ? <Button type="link" onClick={() => handleOpen(row)}>启用</Button>
+            ? <Button type="link" onClick={() => handleEnable(row)}>启用</Button>
             : <Button type="link" onClick={() => handleDisabled(row)}>禁用</Button>
           }
           <Button type="link" onClick={() => handleDelete(row)}>删除</Button>
@@ -118,10 +142,10 @@ const ClassManager = () => {
           </Form.Item>
 
           <Form.Item>
-            <Button type="primary" icon={<SearchOutlined />} onClick={handleSearch}>搜索</Button>
+            <Button type="primary" icon={<SearchOutlined />} onClick={fetchList}>搜索</Button>
           </Form.Item>
           <Form.Item>
-            <Button icon={<PlusCircleTwoTone />}>添加</Button>
+            <Button icon={<PlusCircleTwoTone />} onClick={handleCreate}>添加</Button>
           </Form.Item>
         </Form>
       </div>
@@ -131,10 +155,23 @@ const ClassManager = () => {
         dataSource={list}
         pagination={{
           pageSize: pagin.pageSize,
-          total: pagin.total
+          total: pagin.total,
+          showSizeChanger: false
         }}
         bordered
         onChange={handleChange}
+      />
+
+      <ClassEditor
+        open={editor.visible}
+        editType={editor.type}
+        data={editor.data}
+        top="30vh"
+        onOk={() => {
+          fetchList()
+          handleClose()
+        }}
+        onCancel={handleClose}
       />
     </div>
   )

@@ -1,5 +1,6 @@
 import { v4 } from 'uuid'
 import { isNil } from 'lodash'
+import { Modal } from 'antd'
 
 export const getUuid = () => v4().replace('-', '')
 
@@ -30,4 +31,26 @@ export const filterEmptyField = (obj) => {
   }
 
   return res
+}
+
+/**
+ * @param {import('antd').ModalFuncProps} props
+ * @returns
+ */
+export const showConfirm = (props) => {
+  const { title = '提示' } = props
+
+  return new Promise((resolve) => {
+    Modal.confirm({
+      title,
+      okText: '确定',
+      centered: true,
+      cancelText: '取消',
+      okType: 'danger',
+      ...props,
+      onOk() {
+        resolve()
+      },
+    })
+  })
 }
