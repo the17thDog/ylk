@@ -2,14 +2,12 @@ import { useEffect } from "react"
 import { Modal, Form, Input } from "antd"
 import { requireRule } from "@/utils/rules"
 
-const { TextArea } = Input
-
 export const EditType = {
   Create: 'create',
   Modify: 'modify'
 }
 
-const NoteEditor = (props) => {
+const ClassEditor = (props) => {
   const { content, editType, ...modalProps } = props
   const { onOk, open } = modalProps
 
@@ -34,7 +32,7 @@ const NoteEditor = (props) => {
   return (
     <Modal
       {...modalProps}
-      title={isModify ? '编辑笔记' : '创建笔记'}
+      title={isModify ? '编辑班级' : '创建班级'}
       okText="确认"
       cancelText="取消"
       keyboard={false}
@@ -48,7 +46,7 @@ const NoteEditor = (props) => {
           name="content"
           rules={[requireRule('笔记不能为空')]}
         >
-          <TextArea
+          <Input
             placeholder="请输入笔记"
             rows={8}
             showCount
@@ -60,4 +58,4 @@ const NoteEditor = (props) => {
   )
 }
 
-export default NoteEditor
+export default ClassEditor

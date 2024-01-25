@@ -1,34 +1,32 @@
 import { Link, Outlet } from "react-router-dom"
 import React from 'react'
-import { LaptopOutlined, NotificationOutlined, UserOutlined } from '@ant-design/icons';
 import { Layout, Menu, theme } from 'antd';
 const { Header, Content, Sider } = Layout;
 
 import styles from './index.module.less'
 
-const items2 = [UserOutlined, LaptopOutlined, NotificationOutlined].map(
-  (icon, index) => {
-    const key = String(index + 1);
-
-    return {
-      key: `sub${key}`,
-      icon: React.createElement(icon),
-      label: `subnav ${key}`,
-
-      children: new Array(4).fill(null).map((_, j) => {
-        const subKey = index * 4 + j + 1;
-        return {
-          key: subKey,
-          label: `option${subKey}`,
-        };
-      }),
-    };
+const menuItems = [
+  {
+    key: `class`,
+    label: `班级管理`,
   },
-);
-
-const items = [{
-  key: ''
-}]
+  {
+    key: `account`,
+    label: `账号管理`,
+  },
+  {
+    key: `word`,
+    label: `单词管理`,
+  },
+  {
+    key: `phrase`,
+    label: `短语管理`,
+  },
+  {
+    key: `article`,
+    label: `文章管理`,
+  },
+]
 
 const ManagerDashboard = () => {
   const {
@@ -37,21 +35,16 @@ const ManagerDashboard = () => {
 
   return (
     <Layout className={styles.layout_wrapper}>
-      <Header style={{ display: 'flex', alignItems: 'center' }}>
-        <Link to='/'>to home</Link>
+      <Header>
+        <Link to='/'>返回</Link>
       </Header>
       <Content>
-        <Layout
-          className={styles.container}
-          style={{ background: colorBgContainer }}
-        >
-          <Sider style={{ background: colorBgContainer }} width={200}>
+        <Layout className={styles.container}>
+          <Sider width={200}>
             <Menu
               mode="inline"
-              defaultSelectedKeys={['1']}
-              defaultOpenKeys={['sub1']}
               style={{ height: '100%' }}
-              items={items2}
+              items={menuItems}
             />
           </Sider>
           <Content className={styles.content_wrapper}>

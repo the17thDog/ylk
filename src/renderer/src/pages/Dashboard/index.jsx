@@ -10,7 +10,7 @@ import Phrase from "./components/Phrase"
 import styles from './index.module.less'
 
 const DashBoard = () => {
-  const [tabType, setTabType] = useState(TAB_TYPE.Word)
+  const [tabType, setTabType] = useState(TAB_TYPE.Article)
   const [searchInfo, setSearchInfo] = useState({})
   const searchRef = useRef()
   const navigate = useNavigate()
