@@ -1,10 +1,10 @@
 import { useEffect, useState } from "react"
-import { Table, Select, Form, Button, Tag } from "antd"
+import { Table, Select, Form, Button, Tag, Input } from "antd"
 import { SearchOutlined, PlusCircleTwoTone } from '@ant-design/icons'
-import { requestClasses, requestDeleteClass, requestDisableClass, requestEnableClass } from "@/apis/classManager"
+import { requestAccounts, requestDeleteAccount, requestDisableAccount, requestEnableAccount } from "@/apis/accountManager"
 import { filterEmptyField, showConfirm } from '@/utils'
 
-import ClassEditor, { EditType } from "./ClassEditor"
+import AccountEditor, { EditType } from "./AccountEditor"
 
 const Status = {
   Disabled: 0,
@@ -16,7 +16,7 @@ const StatusLabel = {
   [Status.Open]: '开启',
 }
 
-const ClassManager = () => {
+const AccountManager = () => {
   const [form] = Form.useForm()
   const [list, setList] = useState([])
   const [editor, setEditor] = useState({
@@ -38,7 +38,7 @@ const ClassManager = () => {
     const filter = form.getFieldsValue()
     const params = { ...pagin, ...filter }
 
-    const { data } = await requestClasses(filterEmptyField(params))
+    const { data } = await requestAccounts(filterEmptyField(params))
 
     setList(data.list)
     setPagin({
@@ -48,22 +48,32 @@ const ClassManager = () => {
   }
 
   const handleEnable = async (row) => {
-    await requestEnableClass(row.id)
+    await requestEnableAccount(row.id)
 
     fetchList()
   }
 
   const handleDisabled = async (row) => {
-    await requestDisableClass(row.id)
+    await requestDisableAccount(row.id)
 
     fetchList()
   }
 
   const handleDelete = async (row) => {
-    await showConfirm({ content: '该班级下所有账号也会被删除，确认要删除该班级吗？' })
-    await requestDeleteClass()
+    await showConfirm({ content: '确认删除该账号吗？' })
+    await requestDeleteAccount()
 
     fetchList()
+  }
+
+  const handleEdit = (row) => {
+    setEditor({
+      visible: true,
+      type: EditType.Modify,
+      data: {
+        content: row.content
+      }
+    })
   }
 
   const handleChange = ({ current }) => {
@@ -90,6 +100,11 @@ const ClassManager = () => {
 
   const columns = [
     {
+      title: '昵称',
+      dataIndex: 'nickname',
+      key: 'nickname',
+    },
+    {
       title: '班级',
       dataIndex: 'classNo',
       key: 'classNo',
@@ -98,6 +113,21 @@ const ClassManager = () => {
       title: '账号',
       dataIndex: 'account',
       key: 'account',
+    },
+    {
+      title: '密码',
+      dataIndex: 'password',
+      key: 'password',
+    },
+    {
+      title: '验证码',
+      dataIndex: 'checkCode',
+      key: 'checkCode',
+    },
+    {
+      title: '权限',
+      dataIndex: 'auth',
+      key: 'auth',
     },
     {
       title: '状态',
@@ -121,6 +151,7 @@ const ClassManager = () => {
             : <Button type="link" onClick={() => handleDisabled(row)}>禁用</Button>
           }
           <Button type="link" onClick={() => handleDelete(row)}>删除</Button>
+          <Button type="link" onClick={() => handleEdit(row)}>编辑</Button>
         </>
       }
     }
@@ -133,12 +164,32 @@ const ClassManager = () => {
           <Form.Item label="状态" name="status">
             <Select
               style={{ width: 180 }}
-              placeholder="请选择"
               allowClear
+              placeholder="请选择"
               options={[
                 { value: Status.Open, label: '启用' },
                 { value: Status.Disabled, label: '禁用' },
               ]}
+            />
+          </Form.Item>
+
+          <Form.Item label="班级" name="class">
+            <Select
+              style={{ width: 180 }}
+              allowClear
+              placeholder="请选择"
+              options={[
+                { value: Status.Open, label: '启用' },
+                { value: Status.Disabled, label: '禁用' },
+              ]}
+            />
+          </Form.Item>
+
+          <Form.Item label="班级" name="class">
+            <Input
+              style={{ width: 180 }}
+              allowClear
+              placeholder="请输入账号"
             />
           </Form.Item>
 
@@ -163,7 +214,7 @@ const ClassManager = () => {
         onChange={handleChange}
       />
 
-      <ClassEditor
+      <AccountEditor
         open={editor.visible}
         editType={editor.type}
         data={editor.data}
@@ -178,4 +229,4 @@ const ClassManager = () => {
   )
 }
 
-export default ClassManager
+export default AccountManager

@@ -20,7 +20,7 @@ const DashBoard = () => {
   }
 
   const handleClick = () => {
-    navigate('/settings/class')
+    navigate('/settings')
   }
 
   return (

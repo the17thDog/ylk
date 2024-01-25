@@ -42,7 +42,7 @@ const ClassEditor = (props) => {
         form.setFieldValue('content', content)
       }
     } else {
-      form.setFieldsValue(['content'])
+      form.resetFields()
     }
   }, [open])
 
@@ -61,8 +61,9 @@ const ClassEditor = (props) => {
       title={isModify ? '编辑班级' : '创建班级'}
       okText="确认"
       cancelText="取消"
-      keyboard={false}
       width={600}
+      forceRender
+      maskClosable={false}
       centered
       destroyOnClose
       onOk={handleOk}
@@ -74,7 +75,7 @@ const ClassEditor = (props) => {
           rules={[requireRule('班级不能为空'), classRule()]}
         >
           <Input.TextArea
-            placeholder="请输入班级"
+            placeholder="请输入班级，多个账号用英文逗号隔开"
             rows={8}
           />
         </Form.Item>

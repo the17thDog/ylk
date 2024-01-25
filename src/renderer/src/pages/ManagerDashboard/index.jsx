@@ -1,6 +1,6 @@
-import { Link, Outlet } from "react-router-dom"
+import { Link, Outlet, useNavigate } from "react-router-dom"
 import React from 'react'
-import { Layout, Menu, theme } from 'antd';
+import { Layout, Menu } from 'antd';
 const { Header, Content, Sider } = Layout;
 
 import styles from './index.module.less'
@@ -29,9 +29,11 @@ const menuItems = [
 ]
 
 const ManagerDashboard = () => {
-  const {
-    token: { colorBgContainer },
-  } = theme.useToken();
+  const navigate = useNavigate()
+
+  const handleClick = ({ key }) => {
+    navigate(key)
+  }
 
   return (
     <Layout className={styles.layout_wrapper}>
@@ -45,6 +47,7 @@ const ManagerDashboard = () => {
               mode="inline"
               style={{ height: '100%' }}
               items={menuItems}
+              onClick={handleClick}
             />
           </Sider>
           <Content className={styles.content_wrapper}>

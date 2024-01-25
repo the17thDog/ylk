@@ -3,6 +3,7 @@ import { createBrowserRouter, Link } from 'react-router-dom'
 import Dashboard from '@/pages/Dashboard'
 import ManagerDashboard from '@/pages/ManagerDashboard'
 import ClassManager from '@/pages/ClassManager'
+import AccountManager from '@/pages/AccountManager'
 
 const router = createBrowserRouter([
   {
@@ -16,6 +17,10 @@ const router = createBrowserRouter([
       {
         path: '/settings/class',
         Component: ClassManager
+      },
+      {
+        path: '/settings/account',
+        Component: AccountManager
       }
     ]
   },
