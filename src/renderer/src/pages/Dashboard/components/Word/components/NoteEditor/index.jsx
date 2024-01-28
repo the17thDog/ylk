@@ -22,6 +22,8 @@ const NoteEditor = (props) => {
       if (isModify) {
         form.setFieldValue('content', content)
       }
+    } else {
+      form.resetFields()
     }
   }, [open])
 

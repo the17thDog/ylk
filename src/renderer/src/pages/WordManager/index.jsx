@@ -1,22 +1,12 @@
 import { useEffect, useState } from "react"
-import { Table, Select, Form, Button, Tag, Input } from "antd"
+import { Table, Form, Button, Input } from "antd"
 import { SearchOutlined, PlusCircleTwoTone } from '@ant-design/icons'
-import { requestAccounts, requestDeleteAccount, requestDisableAccount, requestEnableAccount } from "@/apis/accountManager"
+import { requestWords, requestDeleteWord } from "@/apis/wordManager"
 import { filterEmptyField, showConfirm } from '@/utils'
 
-import AccountEditor, { EditType } from "./AccountEditor"
+import WordEditor, { EditType } from "./components/WordEditor"
 
-const Status = {
-  Disabled: 0,
-  Open: 1
-}
-
-const StatusLabel = {
-  [Status.Disabled]: '禁用',
-  [Status.Open]: '开启',
-}
-
-const AccountManager = () => {
+const WordManager = () => {
   const [form] = Form.useForm()
   const [list, setList] = useState([])
   const [editor, setEditor] = useState({
@@ -38,7 +28,7 @@ const AccountManager = () => {
     const filter = form.getFieldsValue()
     const params = { ...pagin, ...filter }
 
-    const { data } = await requestAccounts(filterEmptyField(params))
+    const { data } = await requestWords(filterEmptyField(params))
 
     setList(data.list)
     setPagin({
@@ -48,20 +38,20 @@ const AccountManager = () => {
   }
 
   const handleEnable = async (row) => {
-    await requestEnableAccount(row.id)
+    await requestEnableWord(row.id)
 
     fetchList()
   }
 
   const handleDisabled = async (row) => {
-    await requestDisableAccount(row.id)
+    await requestDisableWord(row.id)
 
     fetchList()
   }
 
   const handleDelete = async (row) => {
     await showConfirm({ content: '确认删除该账号吗？' })
-    await requestDeleteAccount()
+    await requestDeleteWord()
 
     fetchList()
   }
@@ -100,40 +90,14 @@ const AccountManager = () => {
 
   const columns = [
     {
-      title: '昵称',
-      dataIndex: 'nickname',
-      key: 'nickname',
+      title: '英文',
+      dataIndex: 'english',
+      key: 'english',
     },
     {
-      title: '班级',
-      dataIndex: 'classNo',
-      key: 'classNo',
-    },
-    {
-      title: '账号',
-      dataIndex: 'account',
-      key: 'account',
-    },
-    {
-      title: '密码',
-      dataIndex: 'password',
-      key: 'password',
-    },
-    {
-      title: '验证码',
-      dataIndex: 'checkCode',
-      key: 'checkCode',
-    },
-    {
-      title: '权限',
-      dataIndex: 'auth',
-      key: 'auth',
-    },
-    {
-      title: '状态',
-      dataIndex: 'status',
-      key: 'status',
-      render: v => <Tag color={ v === Status.Disabled ? 'default' : 'success' }>{StatusLabel[v]}</Tag>
+      title: '中文',
+      dataIndex: 'chinese',
+      key: 'chinese',
     },
     {
       title: '添加时间',
@@ -146,12 +110,8 @@ const AccountManager = () => {
       key: 'action',
       render(_, row) {
         return <>
-          { row.status === Status.Disabled
-            ? <Button type="link" onClick={() => handleEnable(row)}>启用</Button>
-            : <Button type="link" onClick={() => handleDisabled(row)}>禁用</Button>
-          }
-          <Button type="link" onClick={() => handleDelete(row)}>删除</Button>
           <Button type="link" onClick={() => handleEdit(row)}>编辑</Button>
+          <Button type="link" onClick={() => handleDelete(row)}>删除</Button>
         </>
       }
     }
@@ -161,35 +121,11 @@ const AccountManager = () => {
     <div style={{ padding: 10 }}>
       <div style={{ marginBottom: 20 }}>
         <Form form={form} layout="inline">
-          <Form.Item label="状态" name="status">
-            <Select
-              style={{ width: 180 }}
-              allowClear
-              placeholder="请选择"
-              options={[
-                { value: Status.Open, label: '启用' },
-                { value: Status.Disabled, label: '禁用' },
-              ]}
-            />
-          </Form.Item>
-
-          <Form.Item label="班级" name="class">
-            <Select
-              style={{ width: 180 }}
-              allowClear
-              placeholder="请选择"
-              options={[
-                { value: Status.Open, label: '启用' },
-                { value: Status.Disabled, label: '禁用' },
-              ]}
-            />
-          </Form.Item>
-
-          <Form.Item label="账号" name="class">
+          <Form.Item label="单词" name="english">
             <Input
               style={{ width: 180 }}
               allowClear
-              placeholder="请输入账号"
+              placeholder="请输入单词"
             />
           </Form.Item>
 
@@ -214,7 +150,7 @@ const AccountManager = () => {
         onChange={handleChange}
       />
 
-      <AccountEditor
+      <WordEditor
         open={editor.visible}
         editType={editor.type}
         data={editor.data}
@@ -229,4 +165,4 @@ const AccountManager = () => {
   )
 }
 
-export default AccountManager
+export default WordManager
