@@ -11,7 +11,7 @@ export const EditType = {
   Modify: 'modify'
 }
 
-const AccountEditor = (props) => {
+const PhraseEditor = (props) => {
   const { content, editType, ...modalProps } = props
   const { onOk, open } = modalProps
 
@@ -42,12 +42,12 @@ const AccountEditor = (props) => {
   return (
     <Modal
       {...modalProps}
-      title={isModify ? '编辑单词' : '添加单词'}
+      title={isModify ? '编辑短语' : '添加短语'}
       okText="确认"
       forceRender
       cancelText="取消"
       maskClosable={false}
-      width={640}
+      width={810}
       centered
       wrapClassName={styles.word_wrapper}
       destroyOnClose
@@ -55,11 +55,9 @@ const AccountEditor = (props) => {
     >
 
       <Form
-        labelCol={{ span: 3 }}
-        wrapperCol={{ span: 22 }}
         form={form}
         name="dynamic_form_complex"
-        style={{ maxWidth: 640 }}
+        style={{ maxWidth: 810 }}
         autoComplete="off"
         initialValues={{ items: [{ english: '', chinese: '' }] }}
       >
@@ -79,14 +77,26 @@ const AccountEditor = (props) => {
                         name={[f.name, 'english']}
                         rules={[requireRule()]}
                       >
-                        <Input placeholder="请添加英文" maxLength={20} showCount />
+                        <Input.TextArea
+                          placeholder="请添加英文"
+                          rows={4}
+                          style={{ width: 320, resize: 'none' }}
+                          maxLength={50}
+                          showCount
+                        />
                       </Form.Item>
 
                       <Form.Item
                         name={[f.name, 'chinese']}
                         rules={[requireRule()]}
                       >
-                        <Input placeholder="请添加中文" maxLength={40} showCount />
+                        <Input.TextArea
+                          placeholder="请添加中文"
+                          rows={4}
+                          style={{ width: 320, resize: 'none' }}
+                          maxLength={50}
+                          showCount
+                        />
                       </Form.Item>
 
                       {field.length > 1 &&
@@ -112,4 +122,4 @@ const AccountEditor = (props) => {
   )
 }
 
-export default AccountEditor
+export default PhraseEditor

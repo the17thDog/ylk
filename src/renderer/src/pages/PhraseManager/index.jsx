@@ -1,12 +1,12 @@
 import { useEffect, useState } from "react"
 import { Table, Form, Button, Input } from "antd"
 import { SearchOutlined, PlusCircleTwoTone } from '@ant-design/icons'
-import { requestWords, requestDeleteWord } from "@/apis/wordManager"
+import { requestPhrases, requestDeletePhrase } from "@/apis/phraseManager"
 import { filterEmptyField, showConfirm } from '@/utils'
 
-import WordEditor, { EditType } from "./components/WordEditor"
+import PhraseEditor, { EditType } from "./components/PhraseEditor"
 
-const WordManager = () => {
+const PhraseManager = () => {
   const [form] = Form.useForm()
   const [list, setList] = useState([])
   const [editor, setEditor] = useState({
@@ -28,7 +28,7 @@ const WordManager = () => {
     const filter = form.getFieldsValue()
     const params = { ...pagin, ...filter }
 
-    const { data } = await requestWords(filterEmptyField(params))
+    const { data } = await requestPhrases(filterEmptyField(params))
 
     setList(data.list)
     setPagin({
@@ -38,8 +38,8 @@ const WordManager = () => {
   }
 
   const handleDelete = async (row) => {
-    await showConfirm({ content: '确认删除该单词吗？' })
-    await requestDeleteWord()
+    await showConfirm({ content: '确认删除该短语吗？' })
+    await requestDeletePhrase()
 
     fetchList()
   }
@@ -109,11 +109,11 @@ const WordManager = () => {
     <div style={{ padding: 10 }}>
       <div style={{ marginBottom: 20 }}>
         <Form form={form} layout="inline">
-          <Form.Item label="单词" name="english">
+          <Form.Item label="短语" name="english">
             <Input
               style={{ width: 180 }}
               allowClear
-              placeholder="请输入单词"
+              placeholder="请输入短语"
             />
           </Form.Item>
 
@@ -138,7 +138,7 @@ const WordManager = () => {
         onChange={handleChange}
       />
 
-      <WordEditor
+      <PhraseEditor
         open={editor.visible}
         editType={editor.type}
         data={editor.data}
@@ -153,4 +153,4 @@ const WordManager = () => {
   )
 }
 
-export default WordManager
+export default PhraseManager
