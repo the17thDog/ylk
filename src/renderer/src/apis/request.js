@@ -3,8 +3,9 @@ import axios from 'axios'
 import { message } from 'antd'
 // create an axios instance
 const service = axios.create({
-  baseURL:'/',
-  timeout: 1000000 // request timeout
+  baseURL: 'https://0be8-115-196-21-59.ngrok-free.app/',
+  method: 'post',
+  timeout: 100000 // request timeout
 })
 
 service.interceptors.request.use(
@@ -21,23 +22,29 @@ service.interceptors.response.use(
   response => {
     const res = response.data
     //未登录的状态下跳转至统一平台
-    if(res.code === 4){
-      window.location.href=
-        process.env.NODE_ENV === 'production'
-        ? 'https://uop.imgo.tv/'
-        : 'https://duop.imgo.tv/'
+    if(res.errno === 2110){
+      window.location.href = '/login'
       return
     }
-    if (res.code !== 200 && res.code !== 0) {
-      message.error(res.msg || 'error', 5 * 1000)
-      return res
+
+    if (res.errno !== 200 && res.errno !== 0) {
+      const msg = res.errmsg || '请求失败'
+
+      message.error(msg)
+
+      return Promise.reject(msg)
     } else {
       return res
     }
   },
   error => {
+    if(error?.response.data.errno === 2110){
+      window.location.href = '/login'
+      message.error('未登录')
+      return
+    }
     console.log('err' + error) // for debug
-    message.error(error.msg, 5 * 1000)
+    message.error(error?.message)
     return Promise.reject(error)
   }
 )

@@ -1,6 +1,7 @@
 import { v4 } from 'uuid'
 import { isNil } from 'lodash'
 import { Modal } from 'antd'
+import dayjs from 'dayjs'
 
 export const getUuid = () => v4().replace('-', '')
 
@@ -53,4 +54,10 @@ export const showConfirm = (props) => {
       },
     })
   })
+}
+
+export const formatTime = v => {
+  if (!v) return '-'
+
+  return dayjs(v).format('YYYY-MM-DD')
 }

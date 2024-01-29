@@ -13,14 +13,14 @@ export const EditType = {
  */
 export function classRule() {
   return {
-    message: '请输入正确的班级，4个字以内',
+    message: '请输入正确的班级，8个字以内',
     validator(_, val) {
 
       if (!val) {
         return Promise.resolve()
       }
 
-      const pattern = /^(\w{1,4})(,\w{1,4})*$/
+      const pattern = /^(\w{1,8})(,\w{1,8})*$/
       const match = val.match(pattern)
 
       return match ? Promise.resolve() : Promise.reject()
@@ -48,8 +48,9 @@ const ClassEditor = (props) => {
 
   const handleOk = async () => {
     await form.validateFields()
+    const { className } = form.getFieldsValue()
     await requestCreateClass({
-      ...form.getFieldsValue()
+      classNames: className.split(',')
     })
 
     onOk()
@@ -70,7 +71,7 @@ const ClassEditor = (props) => {
     >
       <Form form={form}>
         <Form.Item
-          name="class"
+          name="className"
           label="班级"
           rules={[requireRule('班级不能为空'), classRule()]}
         >

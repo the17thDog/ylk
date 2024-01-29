@@ -25,14 +25,14 @@ const AccountManager = () => {
     data: {}
   })
   const [pagin, setPagin] = useState({
-    pageNo: 1,
+    pageNum: 1,
     pageSize: 10,
     total: 0
   })
 
   useEffect(() => {
     fetchList()
-  }, [pagin.pageNo])
+  }, [pagin.pageNum])
 
   const fetchList = async () => {
     const filter = form.getFieldsValue()
@@ -79,7 +79,7 @@ const AccountManager = () => {
   const handleChange = ({ current }) => {
     setPagin({
       ...pagin,
-      pageNo: current
+      pageNum: current
     })
   }
 

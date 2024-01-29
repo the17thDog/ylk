@@ -1,7 +1,7 @@
 import { useEffect } from "react"
 import { CloseOutlined, PlusCircleTwoTone } from '@ant-design/icons';
-import { Modal, Form, Input, Card, Button, Space } from "antd"
-import { requestCreateWord } from "@/apis/wordManager"
+import { Modal, Form, Input, Card, Button, Space, message } from "antd"
+import { requestCreatePhrase } from "@/apis/phraseManager"
 
 import styles from './index.module.less'
 import { requireRule } from "@/utils/rules";
@@ -32,9 +32,11 @@ const PhraseEditor = (props) => {
     console.log(' form.getFieldsValue():', form.getFieldsValue());
 
     await form.validateFields()
-    await requestCreateWord({
+    await requestCreatePhrase({
       ...form.getFieldsValue()
     })
+
+    message.success('添加成功')
 
     onOk()
   }
@@ -59,13 +61,13 @@ const PhraseEditor = (props) => {
         name="dynamic_form_complex"
         style={{ maxWidth: 810 }}
         autoComplete="off"
-        initialValues={{ items: [{ english: '', chinese: '' }] }}
+        initialValues={{ phrases: [{ english: '', chinese: '' }] }}
       >
         <Card
           size="small"
         >
           <Form.Item label="英/中">
-            <Form.List name='items'>
+            <Form.List name='phrases'>
               {(field, opt) => (
                 <div>
                   {field.map((f) => (

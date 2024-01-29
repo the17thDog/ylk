@@ -1,7 +1,7 @@
 import request from './request'
 
-export function requestWords(params) {
-  const data = [
+export function requestWords(data) {
+  const data1 = [
     {
       key: '1',
       english: 'good',
@@ -39,32 +39,32 @@ export function requestWords(params) {
     },
   ]
 
-  return Promise.resolve({
-    code: 0,
-    data: {
-      list: data,
-      total: parseInt(Math.random() * 100)
-    }
+  // return Promise.resolve({
+  //   code: 0,
+  //   data: {
+  //     list: data,
+  //     total: parseInt(Math.random() * 100)
+  //   }
+  // })
+
+  return request({
+    url: '/word/simpleList',
+    method: 'post',
+    data
   })
 }
 
-export function requestCreateWord(params) {
-  return Promise.resolve()
-
+export function requestCreateWord(data) {
   return request({
-    url: '',
+    url: '/word/add',
     method: 'post',
-    data: {
-      ...params
-    }
+    data
   })
 }
 
 export function requestDeleteWord(id) {
-  return Promise.resolve()
-
   return request({
-    url: '',
+    url: '/word/delete',
     data: {
       id
     }

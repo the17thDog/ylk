@@ -32,8 +32,9 @@ const AccountEditor = (props) => {
     console.log(' form.getFieldsValue():', form.getFieldsValue());
 
     await form.validateFields()
+    const data = form.getFieldsValue()
     await requestCreateWord({
-      ...form.getFieldsValue()
+      ...data
     })
 
     onOk()
@@ -61,13 +62,13 @@ const AccountEditor = (props) => {
         name="dynamic_form_complex"
         style={{ maxWidth: 640 }}
         autoComplete="off"
-        initialValues={{ items: [{ english: '', chinese: '' }] }}
+        initialValues={{ words: [{ english: '', chinese: '' }] }}
       >
         <Card
           size="small"
         >
           <Form.Item label="英/中">
-            <Form.List name='items'>
+            <Form.List name='words'>
               {(field, opt) => (
                 <div>
                   {field.map((f) => (

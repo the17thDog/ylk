@@ -32,7 +32,7 @@ const ArticleEditor = (props) => {
     console.log(' form.getFieldsValue():', form.getFieldsValue());
 
     await form.validateFields()
-    await requestCreateWord({
+    await requestCreateArticle({
       ...form.getFieldsValue()
     })
 
@@ -59,7 +59,7 @@ const ArticleEditor = (props) => {
         name="dynamic_form_complex"
         style={{ maxWidth: 810 }}
         autoComplete="off"
-        initialValues={{ items: [{ english: '', chinese: '' }] }}
+        initialValues={{ articles: [{ english: '', chinese: '' }] }}
       >
         <Form.Item
           label="文章标题"
@@ -80,7 +80,7 @@ const ArticleEditor = (props) => {
           title="添加段落"
         >
           <Form.Item>
-            <Form.List name='items'>
+            <Form.List name='articles'>
               {(field, opt) => (
                 <div>
                   {field.map((f, index) => (

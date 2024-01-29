@@ -7,11 +7,16 @@ import AccountManager from '@/pages/AccountManager'
 import WordManager from '@/pages/WordManager'
 import PhraseManager from '@/pages/PhraseManager'
 import ArticleManager from '@/pages/ArticleManager'
+import Login from '@/pages/Login'
 
 const router = createBrowserRouter([
   {
     path: "/",
     Component: Dashboard,
+  },
+  {
+    path: "/login",
+    Component: Login,
   },
   {
     path: '/settings',

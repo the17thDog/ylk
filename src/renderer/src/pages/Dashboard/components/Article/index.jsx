@@ -11,7 +11,7 @@ const Article = () => {
     title: '',
   })
   const [pagin, setPagin] = useState({
-    pageNo: 1,
+    pageNum: 1,
     pageSize: 5,
     total: 0
   })
@@ -32,14 +32,14 @@ const Article = () => {
     })
   }
 
-  const handlePageChange = (pageNo) => {
+  const handlePageChange = (pageNum) => {
     setPagin({
       ...pagin,
-      pageNo
+      pageNum
     })
 
     fetchArticles({
-      pageNo,
+      pageNum,
       pageSize: pagin.pageSize
     })
   }

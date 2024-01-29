@@ -1,8 +1,8 @@
 import { useEffect, useState } from "react"
-import { Table, Select, Form, Button, Tag } from "antd"
+import { Table, Select, Form, Button, Tag, message } from "antd"
 import { SearchOutlined, PlusCircleTwoTone } from '@ant-design/icons'
 import { requestClasses, requestDeleteClass, requestDisableClass, requestEnableClass } from "@/apis/classManager"
-import { filterEmptyField, showConfirm } from '@/utils'
+import { filterEmptyField, formatTime, showConfirm } from '@/utils'
 
 import ClassEditor, { EditType } from "./ClassEditor"
 
@@ -25,14 +25,14 @@ const ClassManager = () => {
     data: {}
   })
   const [pagin, setPagin] = useState({
-    pageNo: 1,
+    pageNum: 1,
     pageSize: 10,
     total: 0
   })
 
   useEffect(() => {
     fetchList()
-  }, [pagin.pageNo])
+  }, [pagin.pageNum])
 
   const fetchList = async () => {
     const filter = form.getFieldsValue()
@@ -50,26 +50,29 @@ const ClassManager = () => {
   const handleEnable = async (row) => {
     await requestEnableClass(row.id)
 
+    message.success('启用成功')
     fetchList()
   }
 
   const handleDisabled = async (row) => {
     await requestDisableClass(row.id)
 
+    message.success('禁用成功')
     fetchList()
   }
 
   const handleDelete = async (row) => {
     await showConfirm({ content: '该班级下所有账号也会被删除，确认要删除该班级吗？' })
-    await requestDeleteClass()
+    await requestDeleteClass(row.id)
 
+    message.success('删除成功')
     fetchList()
   }
 
   const handleChange = ({ current }) => {
     setPagin({
       ...pagin,
-      pageNo: current
+      pageNum: current
     })
   }
 
@@ -91,13 +94,8 @@ const ClassManager = () => {
   const columns = [
     {
       title: '班级',
-      dataIndex: 'classNo',
+      dataIndex: 'className',
       key: 'classNo',
-    },
-    {
-      title: '账号',
-      dataIndex: 'account',
-      key: 'account',
     },
     {
       title: '状态',
@@ -107,8 +105,9 @@ const ClassManager = () => {
     },
     {
       title: '添加时间',
-      dataIndex: 'time',
-      key: 'time',
+      dataIndex: 'createTime',
+      key: 'createTime',
+      render: (_, row) => formatTime(row.createTime)
     },
     {
       title: '操作',
@@ -154,6 +153,7 @@ const ClassManager = () => {
       <Table
         columns={columns}
         dataSource={list}
+        rowKey="id"
         pagination={{
           pageSize: pagin.pageSize,
           total: pagin.total,

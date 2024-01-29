@@ -1,8 +1,8 @@
 import { useEffect, useState } from "react"
-import { Table, Form, Button, Input } from "antd"
+import { Table, Form, Button, Input, message } from "antd"
 import { SearchOutlined, PlusCircleTwoTone } from '@ant-design/icons'
 import { requestArticles, requestDeleteArticle } from "@/apis/articleManager"
-import { filterEmptyField, showConfirm } from '@/utils'
+import { filterEmptyField, formatTime, showConfirm } from '@/utils'
 
 import ArticleEditor, { EditType } from "./components/ArticleEditor"
 
@@ -15,14 +15,14 @@ const ArticleManager = () => {
     data: {}
   })
   const [pagin, setPagin] = useState({
-    pageNo: 1,
+    pageNum: 1,
     pageSize: 10,
     total: 0
   })
 
   useEffect(() => {
     fetchList()
-  }, [pagin.pageNo])
+  }, [pagin.pageNum])
 
   const fetchList = async () => {
     const filter = form.getFieldsValue()
@@ -38,8 +38,10 @@ const ArticleManager = () => {
   }
 
   const handleDelete = async (row) => {
-    await showConfirm({ content: '确认删除该短语吗？' })
-    await requestDeleteArticle()
+    await showConfirm({ content: '确认删除该文章吗？' })
+    await requestDeleteArticle(row.id)
+
+    message.success('删除成功')
 
     fetchList()
   }
@@ -57,7 +59,7 @@ const ArticleManager = () => {
   const handleChange = ({ current }) => {
     setPagin({
       ...pagin,
-      pageNo: current
+      pageNum: current
     })
   }
 
@@ -78,19 +80,27 @@ const ArticleManager = () => {
 
   const columns = [
     {
+      title: '标题',
+      dataIndex: 'title',
+      key: 'title',
+    },
+    {
       title: '英文',
       dataIndex: 'english',
       key: 'english',
+      ellipsis: true,
     },
     {
       title: '中文',
       dataIndex: 'chinese',
       key: 'chinese',
+      ellipsis: true,
     },
     {
       title: '添加时间',
-      dataIndex: 'time',
-      key: 'time',
+      dataIndex: 'createTime',
+      key: 'createTime',
+      render: (_, row) => formatTime(row.createTime)
     },
     {
       title: '操作',
@@ -129,6 +139,7 @@ const ArticleManager = () => {
       <Table
         columns={columns}
         dataSource={list}
+        rowKey="id"
         pagination={{
           pageSize: pagin.pageSize,
           total: pagin.total,

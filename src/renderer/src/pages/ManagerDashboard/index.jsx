@@ -1,7 +1,10 @@
 import { Link, Outlet, useNavigate } from "react-router-dom"
 import React from 'react'
 import { Layout, Menu } from 'antd';
-const { Header, Content, Sider } = Layout;
+
+import Header from "@/components/Header";
+
+const { Content, Sider } = Layout;
 
 import styles from './index.module.less'
 
@@ -37,12 +40,11 @@ const ManagerDashboard = () => {
 
   return (
     <Layout className={styles.layout_wrapper}>
-      <Header>
-        <Link to='/'>返回</Link>
-      </Header>
+      <Header useBack />
+
       <Content>
         <Layout className={styles.container}>
-          <Sider width={200}>
+          <Sider width={200} style={{ paddingTop: 16, background: '#fff' }}>
             <Menu
               mode="inline"
               style={{ height: '100%' }}

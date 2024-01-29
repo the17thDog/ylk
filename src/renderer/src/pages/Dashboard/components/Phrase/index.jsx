@@ -6,7 +6,7 @@ import { requestPhraseList } from '@/apis/dashboard'
 const Phrase = () => {
   const [phrases, setPhrases] = useState([])
   const [pagin, setPagin] = useState({
-    pageNo: 1,
+    pageNum: 1,
     pageSize: 5,
     total: 0
   })
@@ -27,14 +27,14 @@ const Phrase = () => {
     })
   }
 
-  const handlePageChange = (pageNo) => {
+  const handlePageChange = (pageNum) => {
     setPagin({
       ...pagin,
-      pageNo
+      pageNum
     })
 
     fetchPhrases({
-      pageNo,
+      pageNum,
       pageSize: pagin.pageSize
     })
   }

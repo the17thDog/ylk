@@ -2,7 +2,7 @@ import { useEffect, useState } from "react"
 import { Table, Form, Button, Input } from "antd"
 import { SearchOutlined, PlusCircleTwoTone } from '@ant-design/icons'
 import { requestPhrases, requestDeletePhrase } from "@/apis/phraseManager"
-import { filterEmptyField, showConfirm } from '@/utils'
+import { filterEmptyField, formatTime, showConfirm } from '@/utils'
 
 import PhraseEditor, { EditType } from "./components/PhraseEditor"
 
@@ -15,14 +15,14 @@ const PhraseManager = () => {
     data: {}
   })
   const [pagin, setPagin] = useState({
-    pageNo: 1,
+    pageNum: 1,
     pageSize: 10,
     total: 0
   })
 
   useEffect(() => {
     fetchList()
-  }, [pagin.pageNo])
+  }, [pagin.pageNum])
 
   const fetchList = async () => {
     const filter = form.getFieldsValue()
@@ -57,7 +57,7 @@ const PhraseManager = () => {
   const handleChange = ({ current }) => {
     setPagin({
       ...pagin,
-      pageNo: current
+      pageNum: current
     })
   }
 
@@ -89,8 +89,9 @@ const PhraseManager = () => {
     },
     {
       title: '添加时间',
-      dataIndex: 'time',
-      key: 'time',
+      dataIndex: 'createTime',
+      key: 'createTime',
+      render: (_, row) => formatTime(row.createTime)
     },
     {
       title: '操作',
@@ -129,6 +130,7 @@ const PhraseManager = () => {
       <Table
         columns={columns}
         dataSource={list}
+        rowKey="id"
         pagination={{
           pageSize: pagin.pageSize,
           total: pagin.total,

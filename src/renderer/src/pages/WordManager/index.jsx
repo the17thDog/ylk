@@ -1,8 +1,8 @@
 import { useEffect, useState } from "react"
-import { Table, Form, Button, Input } from "antd"
+import { Table, Form, Button, Input, message } from "antd"
 import { SearchOutlined, PlusCircleTwoTone } from '@ant-design/icons'
 import { requestWords, requestDeleteWord } from "@/apis/wordManager"
-import { filterEmptyField, showConfirm } from '@/utils'
+import { filterEmptyField, formatTime, showConfirm } from '@/utils'
 
 import WordEditor, { EditType } from "./components/WordEditor"
 
@@ -15,14 +15,14 @@ const WordManager = () => {
     data: {}
   })
   const [pagin, setPagin] = useState({
-    pageNo: 1,
+    pageNum: 1,
     pageSize: 10,
     total: 0
   })
 
   useEffect(() => {
     fetchList()
-  }, [pagin.pageNo])
+  }, [pagin.pageNum])
 
   const fetchList = async () => {
     const filter = form.getFieldsValue()
@@ -39,8 +39,9 @@ const WordManager = () => {
 
   const handleDelete = async (row) => {
     await showConfirm({ content: '确认删除该单词吗？' })
-    await requestDeleteWord()
+    await requestDeleteWord(row.id)
 
+    message.success('删除成功')
     fetchList()
   }
 
@@ -57,7 +58,7 @@ const WordManager = () => {
   const handleChange = ({ current }) => {
     setPagin({
       ...pagin,
-      pageNo: current
+      pageNum: current
     })
   }
 
@@ -76,40 +77,11 @@ const WordManager = () => {
     })
   }
 
-  const columns = [
-    {
-      title: '英文',
-      dataIndex: 'english',
-      key: 'english',
-    },
-    {
-      title: '中文',
-      dataIndex: 'chinese',
-      key: 'chinese',
-    },
-    {
-      title: '添加时间',
-      dataIndex: 'time',
-      key: 'time',
-    },
-    {
-      title: '操作',
-      dataIndex: 'action',
-      key: 'action',
-      render(_, row) {
-        return <>
-          {/* <Button type="link" onClick={() => handleEdit(row)}>编辑</Button> */}
-          <Button type="link" onClick={() => handleDelete(row)}>删除</Button>
-        </>
-      }
-    }
-  ]
-
   return (
     <div style={{ padding: 10 }}>
       <div style={{ marginBottom: 20 }}>
         <Form form={form} layout="inline">
-          <Form.Item label="单词" name="english">
+          <Form.Item label="单词" name="word">
             <Input
               style={{ width: 180 }}
               allowClear
@@ -127,7 +99,36 @@ const WordManager = () => {
       </div>
 
       <Table
-        columns={columns}
+        rowKey="id"
+        columns={[
+          {
+            title: '英文',
+            dataIndex: 'english',
+            key: 'english',
+          },
+          {
+            title: '中文',
+            dataIndex: 'chinese',
+            key: 'chinese',
+          },
+          {
+            title: '添加时间',
+            dataIndex: 'createTime',
+            key: 'createTime',
+            render: (_, row) =>  formatTime(row.createTime)
+          },
+          {
+            title: '操作',
+            dataIndex: 'action',
+            key: 'action',
+            render(_, row) {
+              return <>
+                {/* <Button type="link" onClick={() => handleEdit(row)}>编辑</Button> */}
+                <Button type="link" onClick={() => handleDelete(row)}>删除</Button>
+              </>
+            }
+          }
+        ]}
         dataSource={list}
         pagination={{
           pageSize: pagin.pageSize,

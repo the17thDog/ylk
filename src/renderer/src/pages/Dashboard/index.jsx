@@ -1,6 +1,9 @@
 import { useRef, useState } from "react"
 import { Tabs, Button } from "antd"
 import { useNavigate } from "react-router-dom"
+
+import Header from '@/components/Header'
+
 import { TAB_LABEL, TAB_TYPE } from "./constants"
 import SearchBar from "./components/SearchBar"
 import Word from "./components/Word"
@@ -25,11 +28,19 @@ const DashBoard = () => {
 
   return (
     <div className={styles.dashboard_wrapper}>
+      <Header />
+
       <Button
         type="link"
         style={{ position: 'absolute', top: 0 }}
         onClick={handleClick}
       >to manager</Button>
+
+      <Button
+        type="link"
+        style={{ position: 'absolute', right: 0, top: 0 }}
+        onClick={() => navigate('/login')}
+      >to login</Button>
 
       <div className={styles.search_wrapper}>
         <SearchBar
