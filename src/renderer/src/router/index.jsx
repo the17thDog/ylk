@@ -6,6 +6,7 @@ import ClassManager from '@/pages/ClassManager'
 import AccountManager from '@/pages/AccountManager'
 import WordManager from '@/pages/WordManager'
 import PhraseManager from '@/pages/PhraseManager'
+import ArticleManager from '@/pages/ArticleManager'
 
 const router = createBrowserRouter([
   {
@@ -31,6 +32,10 @@ const router = createBrowserRouter([
       {
         path: '/settings/phrase',
         Component: PhraseManager
+      },
+      {
+        path: '/settings/article',
+        Component: ArticleManager
       }
     ]
   },

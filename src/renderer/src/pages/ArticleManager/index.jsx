@@ -1,12 +1,12 @@
 import { useEffect, useState } from "react"
 import { Table, Form, Button, Input } from "antd"
 import { SearchOutlined, PlusCircleTwoTone } from '@ant-design/icons'
-import { requestPhrases, requestDeletePhrase } from "@/apis/phraseManager"
+import { requestArticles, requestDeleteArticle } from "@/apis/articleManager"
 import { filterEmptyField, showConfirm } from '@/utils'
 
-import PhraseEditor, { EditType } from "./components/PhraseEditor"
+import ArticleEditor, { EditType } from "./components/ArticleEditor"
 
-const PhraseManager = () => {
+const ArticleManager = () => {
   const [form] = Form.useForm()
   const [list, setList] = useState([])
   const [editor, setEditor] = useState({
@@ -28,7 +28,7 @@ const PhraseManager = () => {
     const filter = form.getFieldsValue()
     const params = { ...pagin, ...filter }
 
-    const { data } = await requestPhrases(filterEmptyField(params))
+    const { data } = await requestArticles(filterEmptyField(params))
 
     setList(data.list)
     setPagin({
@@ -39,7 +39,7 @@ const PhraseManager = () => {
 
   const handleDelete = async (row) => {
     await showConfirm({ content: '确认删除该短语吗？' })
-    await requestDeletePhrase()
+    await requestDeleteArticle()
 
     fetchList()
   }
@@ -109,11 +109,11 @@ const PhraseManager = () => {
     <div style={{ padding: 10 }}>
       <div style={{ marginBottom: 20 }}>
         <Form form={form} layout="inline">
-          <Form.Item label="短语" name="english">
+          <Form.Item label="文章标题" name="english">
             <Input
               style={{ width: 180 }}
               allowClear
-              placeholder="请输入短语"
+              placeholder="请输入文章标题"
             />
           </Form.Item>
 
@@ -138,7 +138,7 @@ const PhraseManager = () => {
         onChange={handleChange}
       />
 
-      <PhraseEditor
+      <ArticleEditor
         open={editor.visible}
         editType={editor.type}
         data={editor.data}
@@ -153,4 +153,4 @@ const PhraseManager = () => {
   )
 }
 
-export default PhraseManager
+export default ArticleManager

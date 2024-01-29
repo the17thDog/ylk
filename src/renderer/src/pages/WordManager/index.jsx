@@ -98,7 +98,7 @@ const WordManager = () => {
       key: 'action',
       render(_, row) {
         return <>
-          <Button type="link" onClick={() => handleEdit(row)}>编辑</Button>
+          {/* <Button type="link" onClick={() => handleEdit(row)}>编辑</Button> */}
           <Button type="link" onClick={() => handleDelete(row)}>删除</Button>
         </>
       }
