@@ -21,9 +21,9 @@ const NicknameEditor = (props) => {
     await form.validateFields()
     const field = form.getFieldsValue()
 
-    await requestModifyNickname({ ...field, user: user.id })
+    await requestModifyNickname({ ...field, id: user.id })
 
-    message.success('编辑成功')
+    message.success('修改成功')
 
     onOk()
   }

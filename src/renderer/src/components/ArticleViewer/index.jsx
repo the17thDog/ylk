@@ -5,7 +5,8 @@ import { requestArticle } from '@/apis/dashboard'
 import styles from './index.module.less'
 
 const ArticleViewer = (props) => {
-  const { title, searchText, id, ...modalProps } = props
+  const { title, data, text, searchText, id, ...modalProps } = props
+  const { list, marKEnglish } = data
 
   const [articleInfo, setArticleInfo] = useState({
     title: '',
@@ -13,17 +14,20 @@ const ArticleViewer = (props) => {
   })
 
   useEffect(() => {
-    const fn = async () => {
-      const res = await requestArticle()
+    let article = ''
 
-      setArticleInfo({
-        ...articleInfo,
-        content: markTextWithFlag(res.data, 'supply')
-      })
-    }
+    list?.forEach(({ chinese, english }) => {
+      article += `<p style="text-indent: 32px">${english}<p>`
+      article += '<br>'
+      article += `<p style="text-indent: 32px">${chinese}<p>`
+      article += '<br>'
+    })
 
-    fn()
-  }, [props.open])
+    setArticleInfo({
+      ...articleInfo,
+      content: markTextWithFlag(article, [marKEnglish, text])
+    })
+  }, [list, text, marKEnglish, props.open])
 
   const handleOk = () => {
 

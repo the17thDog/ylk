@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import { List, Spin } from 'antd'
 import { requestSearch } from '@/apis/dashboard'
+import { requestWords } from '@/apis/wordManager'
 
 import ArticleViewer from '@/components/ArticleViewer'
 import { BACK_TYPE, TAB_TYPE } from '../../constants'
@@ -13,6 +14,7 @@ const Article = (props) => {
   const [viewerInfo, setViewerInfo] = useState({
     visible: false,
     title: '',
+    data: {}
   })
   const [pagin, setPagin] = useState({
     pageNum: 1,
@@ -57,10 +59,22 @@ const Article = (props) => {
     })
   }
 
-  const handleClickArticle = (row) => {
+  const handleClickArticle = async (row) => {
+    const res = await requestSearch({
+      word: text,
+      type: 1
+    })
+
+    const { english } = res.data
+
+
     setViewerInfo({
       visible: true,
-      title: row.title
+      title: row.title,
+      data: {
+        list: row.articles,
+        markEnglish: english,
+      }
     })
   }
 
@@ -97,8 +111,10 @@ const Article = (props) => {
       <ArticleViewer
         open={viewerInfo.visible}
         title={viewerInfo.title}
+        data={viewerInfo.data}
+        text={text}
         onCancel={() => {
-          setViewerInfo({ visible: false, title: '' })
+          setViewerInfo({ visible: false, title: '', data: {} })
         }}
       />
     </Spin>
