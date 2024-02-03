@@ -22,3 +22,10 @@ export function requestDeletePhrase(id) {
     }
   })
 }
+
+export function requestUploadPhrase(data) {
+  return request({
+    url: '/phrase/upload',
+    data
+  })
+}

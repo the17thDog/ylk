@@ -7,6 +7,14 @@ export function requestAccounts(data) {
   })
 }
 
+export function requestUploadAccounts(data) {
+  return request({
+    url: '/user/upload',
+    headers: { "Content-Type": "multipart/form-data" },
+    data
+  })
+}
+
 export function requestCreateAccount(params) {
   return request({
     url: '/user/addAccountInfo',

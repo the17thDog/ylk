@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react"
-import { Table, Form, Button, Input, message } from "antd"
-import { SearchOutlined, PlusCircleTwoTone } from '@ant-design/icons'
-import { requestArticles, requestDeleteArticle } from "@/apis/articleManager"
+import { Table, Form, Button, Upload, message } from "antd"
+import { SearchOutlined, PlusCircleTwoTone, FolderAddTwoTone } from '@ant-design/icons'
+import { requestArticles, requestDeleteArticle, requestUploadArticle } from "@/apis/articleManager"
 import { filterEmptyField, formatTime, showConfirm } from '@/utils'
 
 import ArticleEditor, { EditType } from "./components/ArticleEditor"
@@ -79,6 +79,16 @@ const ArticleManager = () => {
     })
   }
 
+  const handleUpload = async (data) => {
+    const formData = new FormData()
+    formData.append('file', data.file)
+
+    await requestUploadArticle(formData)
+
+    message.success('上传成功')
+    fetchList()
+  }
+
   const handleCreate = () => {
     setEditor({
       visible: true,
@@ -141,6 +151,15 @@ const ArticleManager = () => {
           </Form.Item> */}
           <Form.Item>
             <Button icon={<PlusCircleTwoTone />} onClick={handleCreate}>添加</Button>
+          </Form.Item>
+          <Form.Item>
+            <Upload
+              showUploadList={false}
+              maxCount={1}
+              customRequest={handleUpload}
+            >
+              <Button icon={<FolderAddTwoTone />}>上传</Button>
+            </Upload>
           </Form.Item>
         </Form>
       </div>

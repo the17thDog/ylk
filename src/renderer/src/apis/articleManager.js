@@ -25,3 +25,10 @@ export function requestDeleteArticle(id) {
     }
   })
 }
+
+export function requestUploadArticle(data) {
+  return request({
+    url: '/article/upload',
+    data
+  })
+}

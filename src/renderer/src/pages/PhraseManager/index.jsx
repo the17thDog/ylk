@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react"
-import { Table, Form, Button, Input } from "antd"
-import { SearchOutlined, PlusCircleTwoTone } from '@ant-design/icons'
-import { requestPhrases, requestDeletePhrase } from "@/apis/phraseManager"
+import { Table, Form, Button, Upload, message } from "antd"
+import { SearchOutlined, PlusCircleTwoTone, FolderAddTwoTone } from '@ant-design/icons'
+import { requestPhrases, requestDeletePhrase, requestUploadPhrase } from "@/apis/phraseManager"
 import { filterEmptyField, formatTime, showConfirm } from '@/utils'
 
 import PhraseEditor, { EditType } from "./components/PhraseEditor"
@@ -77,6 +77,16 @@ const PhraseManager = () => {
     })
   }
 
+  const handleUpload = async (data) => {
+    const formData = new FormData()
+    formData.append('file', data.file)
+
+    await requestUploadPhrase(formData)
+
+    message.success('上传成功')
+    fetchList()
+  }
+
   const handleCreate = () => {
     setEditor({
       visible: true,
@@ -132,6 +142,15 @@ const PhraseManager = () => {
           </Form.Item> */}
           <Form.Item>
             <Button icon={<PlusCircleTwoTone />} onClick={handleCreate}>添加</Button>
+          </Form.Item>
+          <Form.Item>
+            <Upload
+              showUploadList={false}
+              maxCount={1}
+              customRequest={handleUpload}
+            >
+              <Button icon={<FolderAddTwoTone />}>上传</Button>
+            </Upload>
           </Form.Item>
         </Form>
       </div>

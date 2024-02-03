@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react"
-import { Table, Select, Form, Button, Tag, Badge, Input, message } from "antd"
-import { SearchOutlined, PlusCircleTwoTone } from '@ant-design/icons'
-import { requestAccounts, requestDeleteAccount, requestDisableAccount, requestEnableAccount } from "@/apis/accountManager"
+import { Table, Select, Form, Button, Tag, Badge, Input, message, Upload} from "antd"
+import { SearchOutlined, PlusCircleTwoTone, FolderAddTwoTone } from '@ant-design/icons'
+import { requestAccounts, requestDeleteAccount, requestDisableAccount, requestEnableAccount, requestUploadAccounts } from "@/apis/accountManager"
 import { filterEmptyField, formatTime, showConfirm } from '@/utils'
 
 import AccountEditor, { EditType } from "./AccountEditor"
@@ -110,6 +110,16 @@ const AccountManager = () => {
       ...pagin,
       pageNum: current
     })
+  }
+
+  const handleUpload = async (data) => {
+    const formData = new FormData()
+    formData.append('file', data.file)
+
+    await requestUploadAccounts(formData)
+
+    message.success('上传成功')
+    fetchList()
   }
 
   const handleClose = () => {
@@ -234,6 +244,15 @@ const AccountManager = () => {
           </Form.Item>
           <Form.Item>
             <Button icon={<PlusCircleTwoTone />} onClick={handleCreate}>添加</Button>
+          </Form.Item>
+          <Form.Item>
+            <Upload
+              showUploadList={false}
+              maxCount={1}
+              customRequest={handleUpload}
+            >
+              <Button icon={<FolderAddTwoTone />}>上传</Button>
+            </Upload>
           </Form.Item>
         </Form>
       </div>

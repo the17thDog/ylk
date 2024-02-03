@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react"
-import { Table, Form, Button, Input, message } from "antd"
-import { SearchOutlined, PlusCircleTwoTone } from '@ant-design/icons'
-import { requestWords, requestDeleteWord } from "@/apis/wordManager"
+import { Table, Form, Button, Upload, message } from "antd"
+import { SearchOutlined, PlusCircleTwoTone, FolderAddTwoTone } from '@ant-design/icons'
+import { requestWords, requestDeleteWord, requestUploadWord } from "@/apis/wordManager"
 import { filterEmptyField, formatTime, showConfirm } from '@/utils'
 
 import WordEditor, { EditType } from "./components/WordEditor"
@@ -44,6 +44,16 @@ const WordManager = () => {
     } finally {
       setLoading(false)
     }
+  }
+
+  const handleUpload = async (data) => {
+    const formData = new FormData()
+    formData.append('file', data.file)
+
+    await requestUploadWord(formData)
+
+    message.success('上传成功')
+    fetchList()
   }
 
   const handleDelete = async (row) => {
@@ -103,6 +113,15 @@ const WordManager = () => {
           </Form.Item> */}
           <Form.Item>
             <Button icon={<PlusCircleTwoTone />} onClick={handleCreate}>添加</Button>
+          </Form.Item>
+          <Form.Item>
+            <Upload
+              showUploadList={false}
+              maxCount={1}
+              customRequest={handleUpload}
+            >
+              <Button icon={<FolderAddTwoTone />}>上传</Button>
+            </Upload>
           </Form.Item>
         </Form>
       </div>

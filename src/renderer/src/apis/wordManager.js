@@ -70,3 +70,11 @@ export function requestDeleteWord(id) {
     }
   })
 }
+
+
+export function requestUploadWord(data) {
+  return request({
+    url: '/word/upload',
+    data
+  })
+}

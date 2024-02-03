@@ -21,8 +21,7 @@ const NicknameEditor = (props) => {
     await form.validateFields()
     const field = form.getFieldsValue()
 
-
-    await requestModifyNickname({ ...field })
+    await requestModifyNickname({ ...field, user: user.id })
 
     message.success('编辑成功')
 
@@ -32,7 +31,7 @@ const NicknameEditor = (props) => {
   return (
     <Modal
       {...modalProps}
-      title="编辑昵称"
+      title="修改昵称"
       okText="确认"
       cancelText="取消"
       keyboard={false}
@@ -48,7 +47,7 @@ const NicknameEditor = (props) => {
           rules={[requireRule('昵称不能为空')]}
         >
           <Input
-            placeholder="请输入笔记"
+            placeholder="请输入昵称"
             showCount
             maxLength={10}
           />
