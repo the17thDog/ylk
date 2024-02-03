@@ -1,7 +1,8 @@
 import { useEffect } from "react"
-import { Modal, Form, Input, Switch, Select } from "antd"
+import { isNil, pick } from "lodash"
+import { Modal, Form, Input, Switch, Select, message } from "antd"
 import { requireRule } from "@/utils/rules"
-import { requestCreateClass } from "@/apis/classManager"
+import { requestCreateAccount, requestModifyAccount } from "@/apis/accountManager"
 
 export const EditType = {
   Create: 'create',
@@ -55,7 +56,7 @@ export function accountRule() {
 }
 
 const AccountEditor = (props) => {
-  const { content, editType, classList, ...modalProps } = props
+  const { data, editType, classList, ...modalProps } = props
   const { onOk, open } = modalProps
 
   const [form] = Form.useForm();
@@ -65,7 +66,14 @@ const AccountEditor = (props) => {
   useEffect(() => {
     if (open) {
       if (isModify) {
-        // form.setFieldValue('content', content)
+        const fields = pick(data, [
+          'notePermission',
+          'backendPermission',
+          'studentId',
+          'classId'
+        ])
+
+        form.setFieldsValue(fields)
       }
     } else {
       form.resetFields()
@@ -73,12 +81,24 @@ const AccountEditor = (props) => {
   }, [open])
 
   const handleOk = async () => {
-    console.log(' form.getFieldsValue():', form.getFieldsValue());
-
     await form.validateFields()
-    await requestCreateClass({
-      ...form.getFieldsValue()
+
+    const api = isModify ? requestModifyAccount : requestCreateAccount
+    let params = { ...form.getFieldsValue(), id: data.id }
+
+    Object.keys(params).forEach(k => {
+      if (isNil(params[k])) {
+        params[k] = false
+      }
     })
+
+    if (!isModify) {
+      delete params.id
+    }
+
+    await api(params)
+
+    message.success(isModify ? '编辑成功' : '创建成功')
 
     onOk()
   }
@@ -86,7 +106,7 @@ const AccountEditor = (props) => {
   return (
     <Modal
       {...modalProps}
-      title={isModify ? '编辑班级' : '创建班级'}
+      title={isModify ? '编辑账号' : '创建账号'}
       okText="确认"
       forceRender
       cancelText="取消"
@@ -115,6 +135,7 @@ const AccountEditor = (props) => {
           rules={[requireRule('账号不能为空'), accountRule()]}
         >
           <Input.TextArea
+            disabled={isModify}
             placeholder="请输入账号，多个账号用英文逗号隔开"
             style={{ width: 360 }}
             rows={6}

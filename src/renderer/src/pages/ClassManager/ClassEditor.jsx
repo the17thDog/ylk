@@ -20,7 +20,7 @@ export function classRule() {
         return Promise.resolve()
       }
 
-      const pattern = /^(\w{1,8})(,\w{1,8})*$/
+      const pattern = /^([\u4e00-\u9fa5a-zA-Z0-9@#$%^&*()_+{}\[\]:;<>,.?~\\\/\-+=|!]{1,8},){0,7}[\u4e00-\u9fa5a-zA-Z0-9@#$%^&*()_+{}\[\]:;<>,.?~\\\/\-+=|!]{1,8}$/u
       const match = val.match(pattern)
 
       return match ? Promise.resolve() : Promise.reject()

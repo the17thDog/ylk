@@ -7,6 +7,13 @@ export function requestLogin(data) {
   })
 }
 
+export function requestChangePassword(data) {
+  return request({
+    url: '/user/resetPassword',
+    data
+  })
+}
+
 export function requestLogout(data) {
   return request({
     url: '/user/logout',

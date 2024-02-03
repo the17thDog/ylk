@@ -13,7 +13,7 @@ import { requestLogout } from '@/apis/users'
 const Header = props => {
   const { useBack = false, title, hideInfo = false, bgColor = '#f8f8f8' } = props
 
-  const { setUserInfo } = useUserInfo()
+  const { setUserInfo } = useUserInfo(hideInfo)
 
   const [open, setOpen] = useState(false)
   const [editor, setEditor] = useState({ visible: false })
@@ -70,21 +70,15 @@ const Header = props => {
 
       {!hideInfo &&
         <div className={styles.info}>
-          <Button
-            shape='circle'
-            icon={<LeftOutlined />}
-            style={{ marginRight: 16 }}
-            onClick={() => { navigate('/login') }}
-          />
-
-
           <Tooltip title='后台管理'>
-            <Button
-              shape='circle'
-              icon={<HomeTwoTone />}
-              style={{ marginRight: 12 }}
-              onClick={() => { navigate('/settings') }}
-            />
+            {user?.backendPermission &&
+              <Button
+                shape='circle'
+                icon={<HomeTwoTone />}
+                style={{ marginRight: 12 }}
+                onClick={() => { navigate('/settings') }}
+              />
+            }
           </Tooltip>
 
           <Popover

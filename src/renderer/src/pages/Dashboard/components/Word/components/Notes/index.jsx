@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react'
+import { useSelector } from 'react-redux'
 import { Button, Card, List, Spin, Tag, message } from 'antd'
 import { requestNoteByWordId, requestDeleteNote, requestModifyNote } from '@/apis/note'
 import NoteEditor, { EditType } from '../NoteEditor'
@@ -18,6 +19,9 @@ const Notes = (props) => {
     type: EditType.Create,
     data: {}
   })
+
+  const user = useSelector((state) => state.user?.userInfo);
+
 
   useEffect(() => {
     if (wordId) {
@@ -89,11 +93,12 @@ const Notes = (props) => {
   }
 
   const ExtraBtn = (
-    <Button
-      type='link'
-      disabled={!wordId}
-      onClick={handleRecord}
-    >记笔记</Button>
+    user.notePermission &&
+      <Button
+        type='link'
+        disabled={!wordId}
+        onClick={handleRecord}
+      >记笔记</Button>
   )
 
   const handleDelete = async (row) => {

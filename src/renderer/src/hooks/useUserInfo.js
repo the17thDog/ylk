@@ -3,12 +3,14 @@ import { useDispatch } from 'react-redux';
 import { requestGetUserInfo } from '@/apis/users';
 import { setUser } from '@/store/user';
 
-export function useUserInfo() {
+export function useUserInfo(hideInfo) {
   const dispatch = useDispatch()
 
   useEffect(() => {
-    setUserInfo()
-  }, [])
+    if (!hideInfo) {
+      setUserInfo()
+    }
+  }, [hideInfo])
 
   const setUserInfo = useCallback(async () => {
     try {

@@ -5,7 +5,7 @@ import { LockOutlined, UserOutlined, IdcardOutlined} from '@ant-design/icons';
 import { useDispatch } from 'react-redux';
 
 import { requireRule, passwordRule } from '@/utils/rules';
-import { requestLogin, requestGetUserInfo } from '@/apis/users'
+import { requestLogin, requestGetUserInfo, requestChangePassword } from '@/apis/users'
 import { setUser } from '@/store/user'
 import Header from '@/components/Header';
 
@@ -48,7 +48,14 @@ const Login = () => {
   const handleSubmit = async () => {
     await form.validateFields()
     const formData = form.getFieldsValue()
-    console.log('form :', formData);
+
+    delete formData.rePassword
+
+    await requestChangePassword(formData)
+
+    message.success('更新密码成功')
+
+    setMode(Mode.Login)
   }
 
   return (
@@ -109,7 +116,7 @@ const Login = () => {
           {mode === Mode.ResetPassword &&
             <>
               <Form.Item
-                name="account"
+                name="username"
                 rules={[requireRule('账号不能为空')]}
               >
                 <Input
@@ -158,7 +165,7 @@ const Login = () => {
               </Form.Item>
 
               <Form.Item
-                name="vCode"
+                name="code"
                 rules={[
                   requireRule('验证码不能为空')
                 ]}

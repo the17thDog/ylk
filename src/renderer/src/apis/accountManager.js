@@ -8,11 +8,17 @@ export function requestAccounts(data) {
 }
 
 export function requestCreateAccount(params) {
-  return Promise.resolve()
-
   return request({
-    url: '',
-    method: 'post',
+    url: '/user/addAccountInfo',
+    data: {
+      ...params
+    }
+  })
+}
+
+export function requestModifyAccount(params) {
+  return request({
+    url: '/user/updateAccountInfo',
     data: {
       ...params
     }
@@ -20,34 +26,31 @@ export function requestCreateAccount(params) {
 }
 
 export function requestDeleteAccount(id) {
-  return Promise.resolve()
-
   return request({
-    url: '',
+    url: '/user/deleteAccountInfo',
     data: {
-      id
+      id,
     }
   })
 }
 
 export function requestDisableAccount(id) {
-  return Promise.resolve()
 
   return request({
-    url: '',
+    url: '/user/updateAccountInfo',
     data: {
-      id
+      id,
+      status: 0
     }
   })
 }
 
 export function requestEnableAccount(id) {
-  return Promise.resolve()
-
   return request({
-    url: '',
+    url: '/user/updateAccountInfo',
     data: {
-      id
+      id,
+      status: 1
     }
   })
 }

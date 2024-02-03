@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react"
-import { Table, Select, Form, Button, Tag, Badge, Input } from "antd"
+import { Table, Select, Form, Button, Tag, Badge, Input, message } from "antd"
 import { SearchOutlined, PlusCircleTwoTone } from '@ant-design/icons'
 import { requestAccounts, requestDeleteAccount, requestDisableAccount, requestEnableAccount } from "@/apis/accountManager"
 import { filterEmptyField, formatTime, showConfirm } from '@/utils'
@@ -14,7 +14,7 @@ const Status = {
 
 const StatusLabel = {
   [Status.Disabled]: '禁用',
-  [Status.Open]: '开启',
+  [Status.Open]: '启用',
 }
 
 const AccountManager = () => {
@@ -75,18 +75,24 @@ const AccountManager = () => {
   const handleEnable = async (row) => {
     await requestEnableAccount(row.id)
 
+    message.success('启用成功')
+
     fetchList()
   }
 
   const handleDisabled = async (row) => {
     await requestDisableAccount(row.id)
 
+    message.success('禁用成功')
+
     fetchList()
   }
 
   const handleDelete = async (row) => {
     await showConfirm({ content: '确认删除该账号吗？' })
-    await requestDeleteAccount()
+    await requestDeleteAccount(row.id)
+
+    message.success('删除成功')
 
     fetchList()
   }
@@ -95,9 +101,7 @@ const AccountManager = () => {
     setEditor({
       visible: true,
       type: EditType.Modify,
-      data: {
-        content: row.content
-      }
+      data: { ...row }
     })
   }
 
@@ -128,6 +132,7 @@ const AccountManager = () => {
       title: '昵称',
       dataIndex: 'nickName',
       key: 'nickName',
+      render: v => v || '-'
     },
     {
       title: '班级',
@@ -148,24 +153,25 @@ const AccountManager = () => {
       title: '验证码',
       dataIndex: 'code',
       key: 'code',
+      render: v => v || '-'
     },
     {
       title: '后台权限',
       dataIndex: 'backendPermission',
       key: 'backendPermission',
-      render: (v) => <Badge status={v ? 'success' : 'error'} text="开启" />,
+      render: (v) => <Tag color={v ? 'success' : 'default'}>{v ? '开启' : '关闭'}</Tag>,
     },
     {
       title: '笔记权限',
       dataIndex: 'notePermission',
       key: 'notePermission',
-      render: (v) => <Badge status={v ? 'success' : 'error'} text="开启" />,
+      render: (v) => <Tag color={v ? 'success' : 'default'}>{v ? '开启' : '关闭'}</Tag>,
     },
     {
       title: '状态',
       dataIndex: 'status',
       key: 'status',
-      render: v => <Badge status={ v === Status.Disabled ? 'default' : 'success' }>{StatusLabel[v]}</Badge>
+      render: v => <Badge status={v === Status.Disabled ? 'error' : 'success'} text={StatusLabel[v]} />
     },
     {
       title: '添加时间',
@@ -236,6 +242,7 @@ const AccountManager = () => {
         columns={columns}
         dataSource={list}
         loading={loading}
+        rowKey="id"
         pagination={{
           pageSize: pagin.pageSize,
           total: pagin.total,
