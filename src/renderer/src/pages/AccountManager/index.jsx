@@ -1,10 +1,11 @@
 import { useEffect, useState } from "react"
-import { Table, Select, Form, Button, Tag, Input } from "antd"
+import { Table, Select, Form, Button, Tag, Badge, Input } from "antd"
 import { SearchOutlined, PlusCircleTwoTone } from '@ant-design/icons'
 import { requestAccounts, requestDeleteAccount, requestDisableAccount, requestEnableAccount } from "@/apis/accountManager"
-import { filterEmptyField, showConfirm } from '@/utils'
+import { filterEmptyField, formatTime, showConfirm } from '@/utils'
 
 import AccountEditor, { EditType } from "./AccountEditor"
+import { requestClasses } from "@/apis/classManager"
 
 const Status = {
   Disabled: 0,
@@ -19,6 +20,8 @@ const StatusLabel = {
 const AccountManager = () => {
   const [form] = Form.useForm()
   const [list, setList] = useState([])
+  const [classList, setClassList] = useState([])
+  const [loading, setLoading] = useState(false)
   const [editor, setEditor] = useState({
     visible: false,
     type: EditType.Create,
@@ -34,17 +37,39 @@ const AccountManager = () => {
     fetchList()
   }, [pagin.pageNum])
 
+  useEffect(() => {
+    const fn = async () => {
+      try {
+        const res = await requestClasses({ pageNum: 1, pageSize: 99 })
+
+        setClassList(res.data.list)
+      } catch (error) {
+        console.error(error)
+      }
+    }
+
+    fn()
+  }, [])
+
   const fetchList = async () => {
-    const filter = form.getFieldsValue()
-    const params = { ...pagin, ...filter }
+    try {
+      setLoading(true)
 
-    const { data } = await requestAccounts(filterEmptyField(params))
+      const filter = form.getFieldsValue()
+      const params = { ...pagin, ...filter }
 
-    setList(data.list)
-    setPagin({
-      ...pagin,
-      total: data.total
-    })
+      const { data } = await requestAccounts(filterEmptyField(params))
+
+      setList(data.list)
+      setPagin({
+        ...pagin,
+        total: data.total
+      })
+    } catch (error) {
+      console.error(error)
+    } finally {
+      setLoading(false)
+    }
   }
 
   const handleEnable = async (row) => {
@@ -101,13 +126,13 @@ const AccountManager = () => {
   const columns = [
     {
       title: '昵称',
-      dataIndex: 'nickname',
-      key: 'nickname',
+      dataIndex: 'nickName',
+      key: 'nickName',
     },
     {
       title: '班级',
-      dataIndex: 'classNo',
-      key: 'classNo',
+      dataIndex: 'className',
+      key: 'className',
     },
     {
       title: '账号',
@@ -121,24 +146,32 @@ const AccountManager = () => {
     },
     {
       title: '验证码',
-      dataIndex: 'checkCode',
-      key: 'checkCode',
+      dataIndex: 'code',
+      key: 'code',
     },
     {
-      title: '权限',
-      dataIndex: 'auth',
-      key: 'auth',
+      title: '后台权限',
+      dataIndex: 'backendPermission',
+      key: 'backendPermission',
+      render: (v) => <Badge status={v ? 'success' : 'error'} text="开启" />,
+    },
+    {
+      title: '笔记权限',
+      dataIndex: 'notePermission',
+      key: 'notePermission',
+      render: (v) => <Badge status={v ? 'success' : 'error'} text="开启" />,
     },
     {
       title: '状态',
       dataIndex: 'status',
       key: 'status',
-      render: v => <Tag color={ v === Status.Disabled ? 'default' : 'success' }>{StatusLabel[v]}</Tag>
+      render: v => <Badge status={ v === Status.Disabled ? 'default' : 'success' }>{StatusLabel[v]}</Badge>
     },
     {
       title: '添加时间',
-      dataIndex: 'time',
-      key: 'time',
+      dataIndex: 'createTime',
+      key: 'createTime',
+      render: v => formatTime(v)
     },
     {
       title: '操作',
@@ -173,19 +206,16 @@ const AccountManager = () => {
             />
           </Form.Item>
 
-          <Form.Item label="班级" name="class">
+          <Form.Item label="班级" name="classId">
             <Select
               style={{ width: 180 }}
               allowClear
               placeholder="请选择"
-              options={[
-                { value: Status.Open, label: '启用' },
-                { value: Status.Disabled, label: '禁用' },
-              ]}
+              options={classList.map(x => ({ value: x.id, label: x.className  }))}
             />
           </Form.Item>
 
-          <Form.Item label="账号" name="class">
+          <Form.Item label="账号" name="studentId">
             <Input
               style={{ width: 180 }}
               allowClear
@@ -205,10 +235,12 @@ const AccountManager = () => {
       <Table
         columns={columns}
         dataSource={list}
+        loading={loading}
         pagination={{
           pageSize: pagin.pageSize,
           total: pagin.total,
-          showSizeChanger: false
+          showSizeChanger: false,
+          showTotal: (total) => `总共 ${total} 条`
         }}
         bordered
         onChange={handleChange}
@@ -217,6 +249,7 @@ const AccountManager = () => {
       <AccountEditor
         open={editor.visible}
         editType={editor.type}
+        classList={classList}
         data={editor.data}
         top="30vh"
         onOk={() => {

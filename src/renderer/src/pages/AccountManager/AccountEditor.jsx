@@ -1,5 +1,5 @@
 import { useEffect } from "react"
-import { Modal, Form, Input, Switch } from "antd"
+import { Modal, Form, Input, Switch, Select } from "antd"
 import { requireRule } from "@/utils/rules"
 import { requestCreateClass } from "@/apis/classManager"
 
@@ -55,7 +55,7 @@ export function accountRule() {
 }
 
 const AccountEditor = (props) => {
-  const { content, editType, ...modalProps } = props
+  const { content, editType, classList, ...modalProps } = props
   const { onOk, open } = modalProps
 
   const [form] = Form.useForm();
@@ -100,21 +100,17 @@ const AccountEditor = (props) => {
         form={form}
         {...formItemLayout}
       >
-        <Form.Item
-          name="class"
-          label="班级"
-          rules={[requireRule('班级不能为空'), classRule()]}
-        >
-          <Input
-            placeholder="请输入班级"
-            style={{ width: 360 }}
-            maxLength={6}
-            showCount
+        <Form.Item label="班级" name="classId" rules={[requireRule('班级不能为空')]}>
+          <Select
+            style={{ width: 180 }}
+            allowClear
+            placeholder="请选择"
+            options={classList.map(x => ({ value: x.id, label: x.className  }))}
           />
         </Form.Item>
 
         <Form.Item
-          name="account"
+          name="studentId"
           label="账号"
           rules={[requireRule('账号不能为空'), accountRule()]}
         >
@@ -126,7 +122,7 @@ const AccountEditor = (props) => {
         </Form.Item>
 
         <Form.Item
-          name="backAuth"
+          name="backendPermission"
           label="后台权限"
         >
           <Switch
@@ -136,7 +132,7 @@ const AccountEditor = (props) => {
         </Form.Item>
 
         <Form.Item
-          name="noteAuth"
+          name="notePermission"
           label="笔记权限"
         >
           <Switch

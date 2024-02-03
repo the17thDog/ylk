@@ -7,6 +7,7 @@ import { useDispatch } from 'react-redux';
 import { requireRule, passwordRule } from '@/utils/rules';
 import { requestLogin, requestGetUserInfo } from '@/apis/users'
 import { setUser } from '@/store/user'
+import Header from '@/components/Header';
 
 import styles from './index.module.less'
 
@@ -52,11 +53,7 @@ const Login = () => {
 
   return (
     <div className={styles.login_wrapper}>
-      <Button
-        type="link"
-        style={{ position: 'absolute', top: 0 }}
-        onClick={() => { navigate('/') }}
-      >to manager</Button>
+      <Header hideInfo bgColor="#fff" />
 
       <Card
         title={isLogin ? '欢迎使用语料库' : '重置密码'}

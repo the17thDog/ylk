@@ -8,6 +8,7 @@ import WordManager from '@/pages/WordManager'
 import PhraseManager from '@/pages/PhraseManager'
 import ArticleManager from '@/pages/ArticleManager'
 import Login from '@/pages/Login'
+import Note from '@/pages/Note'
 
 const router = createBrowserRouter([
   {
@@ -17,6 +18,10 @@ const router = createBrowserRouter([
   {
     path: "/login",
     Component: Login,
+  },
+  {
+    path: "/note",
+    Component: Note,
   },
   {
     path: '/settings',

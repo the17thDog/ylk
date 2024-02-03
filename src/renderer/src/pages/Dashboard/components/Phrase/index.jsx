@@ -64,6 +64,7 @@ const Phrase = (props) => {
           pageSize: pagin.pageSize,
           showSizeChanger: false,
           total: pagin.total,
+          showTotal: (total) => `总共 ${total} 条`
         }}
         renderItem={(item) => (
           <List.Item

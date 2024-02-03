@@ -9,6 +9,7 @@ import PhraseEditor, { EditType } from "./components/PhraseEditor"
 const PhraseManager = () => {
   const [form] = Form.useForm()
   const [list, setList] = useState([])
+  const [loading, setLoading] = useState(false)
   const [editor, setEditor] = useState({
     visible: false,
     type: EditType.Create,
@@ -25,16 +26,24 @@ const PhraseManager = () => {
   }, [pagin.pageNum])
 
   const fetchList = async () => {
-    const filter = form.getFieldsValue()
-    const params = { ...pagin, ...filter }
+    try {
+      setLoading(true)
 
-    const { data } = await requestPhrases(filterEmptyField(params))
+      const filter = form.getFieldsValue()
+      const params = { ...pagin, ...filter }
 
-    setList(data.list)
-    setPagin({
-      ...pagin,
-      total: data.total
-    })
+      const { data } = await requestPhrases(filterEmptyField(params))
+
+      setList(data.list)
+      setPagin({
+        ...pagin,
+        total: data.total
+      })
+    } catch (error) {
+      console.error(error)
+    } finally {
+      setLoading(false)
+    }
   }
 
   const handleDelete = async (row) => {
@@ -110,7 +119,7 @@ const PhraseManager = () => {
     <div style={{ padding: 10 }}>
       <div style={{ marginBottom: 20 }}>
         <Form form={form} layout="inline">
-          <Form.Item label="短语" name="english">
+          {/* <Form.Item label="短语" name="english">
             <Input
               style={{ width: 180 }}
               allowClear
@@ -120,7 +129,7 @@ const PhraseManager = () => {
 
           <Form.Item>
             <Button type="primary" icon={<SearchOutlined />} onClick={fetchList}>搜索</Button>
-          </Form.Item>
+          </Form.Item> */}
           <Form.Item>
             <Button icon={<PlusCircleTwoTone />} onClick={handleCreate}>添加</Button>
           </Form.Item>
@@ -131,10 +140,12 @@ const PhraseManager = () => {
         columns={columns}
         dataSource={list}
         rowKey="id"
+        loading={loading}
         pagination={{
           pageSize: pagin.pageSize,
           total: pagin.total,
-          showSizeChanger: false
+          showSizeChanger: false,
+          showTotal: (total) => `总共 ${total} 条`
         }}
         bordered
         onChange={handleChange}

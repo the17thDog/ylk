@@ -8,6 +8,7 @@ import WordEditor, { EditType } from "./components/WordEditor"
 
 const WordManager = () => {
   const [form] = Form.useForm()
+  const [loading, setLoading] = useState(false)
   const [list, setList] = useState([])
   const [editor, setEditor] = useState({
     visible: false,
@@ -25,16 +26,24 @@ const WordManager = () => {
   }, [pagin.pageNum])
 
   const fetchList = async () => {
-    const filter = form.getFieldsValue()
-    const params = { ...pagin, ...filter }
+    try {
+      setLoading(true)
 
-    const { data } = await requestWords(filterEmptyField(params))
+      const filter = form.getFieldsValue()
+      const params = { ...pagin, ...filter }
 
-    setList(data.list)
-    setPagin({
-      ...pagin,
-      total: data.total
-    })
+      const { data } = await requestWords(filterEmptyField(params))
+
+      setList(data.list)
+      setPagin({
+        ...pagin,
+        total: data.total
+      })
+    } catch (error) {
+      console.error(error)
+    } finally {
+      setLoading(false)
+    }
   }
 
   const handleDelete = async (row) => {
@@ -81,7 +90,7 @@ const WordManager = () => {
     <div style={{ padding: 10 }}>
       <div style={{ marginBottom: 20 }}>
         <Form form={form} layout="inline">
-          <Form.Item label="单词" name="word">
+          {/* <Form.Item label="单词" name="word">
             <Input
               style={{ width: 180 }}
               allowClear
@@ -91,7 +100,7 @@ const WordManager = () => {
 
           <Form.Item>
             <Button type="primary" icon={<SearchOutlined />} onClick={fetchList}>搜索</Button>
-          </Form.Item>
+          </Form.Item> */}
           <Form.Item>
             <Button icon={<PlusCircleTwoTone />} onClick={handleCreate}>添加</Button>
           </Form.Item>
@@ -129,11 +138,13 @@ const WordManager = () => {
             }
           }
         ]}
+        loading={loading}
         dataSource={list}
         pagination={{
           pageSize: pagin.pageSize,
           total: pagin.total,
-          showSizeChanger: false
+          showSizeChanger: false,
+          showTotal: (total) => `总共 ${total} 条`
         }}
         bordered
         onChange={handleChange}

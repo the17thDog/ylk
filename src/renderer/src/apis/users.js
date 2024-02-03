@@ -7,6 +7,14 @@ export function requestLogin(data) {
   })
 }
 
+export function requestLogout(data) {
+  return request({
+    url: '/user/logout',
+    data
+  })
+}
+
+
 export function requestGetUserInfo() {
   return request({
     url: '/user/getAccountInfo',

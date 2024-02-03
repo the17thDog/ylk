@@ -30,3 +30,9 @@ export function requestDeleteNote(data) {
   })
 }
 
+export function requestNotes(data) {
+  return request({
+    url: '/notes/list',
+    data
+  })
+}

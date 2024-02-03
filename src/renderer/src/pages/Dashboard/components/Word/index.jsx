@@ -22,11 +22,7 @@ const Word = (props) => {
       setLoading(true)
       const res = await requestSearch({ word, type: BACK_TYPE[TAB_TYPE.Word] })
 
-      if (!res.data) {
-        message.info('暂无数据')
-      }
-
-      setWordInfo(res.data ?? { english: '...' })
+      setWordInfo(res.data ?? { english: '暂无数据' })
     } catch (error) {
       console.error(error)
     } finally {
@@ -37,7 +33,7 @@ const Word = (props) => {
   return (
     <div className={styles.word_wrapper}>
       <Spin spinning={loading}>
-        <Card className={styles.word_text}>{ wordInfo.english }</Card>
+        <Card className={styles.word_text}>{ wordInfo.english || '请检索' }</Card>
       </Spin>
 
       <Notes wordId={wordInfo.id} />

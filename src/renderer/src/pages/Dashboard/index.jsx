@@ -40,18 +40,6 @@ const DashBoard = () => {
     <div className={styles.dashboard_wrapper}>
       <Header />
 
-      <Button
-        type="link"
-        style={{ position: 'absolute', top: 0 }}
-        onClick={handleClick}
-      >to manager</Button>
-
-      <Button
-        type="link"
-        style={{ position: 'absolute', right: 0, top: 0 }}
-        onClick={() => navigate('/login')}
-      >to login</Button>
-
       <div className={styles.search_wrapper}>
         <Input.Search
           ref={searchRef}

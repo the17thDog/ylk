@@ -19,6 +19,7 @@ const StatusLabel = {
 const ClassManager = () => {
   const [form] = Form.useForm()
   const [list, setList] = useState([])
+  const [loading, setLoading] = useState(false)
   const [editor, setEditor] = useState({
     visible: false,
     type: EditType.Create,
@@ -35,16 +36,24 @@ const ClassManager = () => {
   }, [pagin.pageNum])
 
   const fetchList = async () => {
-    const filter = form.getFieldsValue()
-    const params = { ...pagin, ...filter }
+    try {
+      setLoading(true)
 
-    const { data } = await requestClasses(filterEmptyField(params))
+      const filter = form.getFieldsValue()
+      const params = { ...pagin, ...filter }
 
-    setList(data.list)
-    setPagin({
-      ...pagin,
-      total: data.total
-    })
+      const { data } = await requestClasses(filterEmptyField(params))
+
+      setList(data.list)
+      setPagin({
+        ...pagin,
+        total: data.total
+      })
+    } catch (error) {
+      console.error(error)
+    } finally {
+      setLoading(false)
+    }
   }
 
   const handleEnable = async (row) => {
@@ -154,10 +163,12 @@ const ClassManager = () => {
         columns={columns}
         dataSource={list}
         rowKey="id"
+        loading={loading}
         pagination={{
           pageSize: pagin.pageSize,
           total: pagin.total,
-          showSizeChanger: false
+          showSizeChanger: false,
+          showTotal: (total) => `总共 ${total} 条`
         }}
         bordered
         onChange={handleChange}

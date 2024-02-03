@@ -40,7 +40,7 @@ const ManagerDashboard = () => {
 
   return (
     <Layout className={styles.layout_wrapper}>
-      <Header useBack />
+      <Header useBack title="后台管理" />
 
       <Content>
         <Layout className={styles.container}>
