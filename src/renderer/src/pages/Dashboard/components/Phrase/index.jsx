@@ -1,10 +1,14 @@
-import { List } from 'antd'
+import { List, Spin } from 'antd'
 import { useEffect, useState } from 'react'
 
-import { requestPhraseList } from '@/apis/dashboard'
+import { requestSearch } from '@/apis/dashboard'
+import { BACK_TYPE, TAB_TYPE } from '../../constants'
 
-const Phrase = () => {
+const Phrase = (props) => {
+  const { text, isCurrent } = props
+
   const [phrases, setPhrases] = useState([])
+  const [loading, setLoading] = useState(false)
   const [pagin, setPagin] = useState({
     pageNum: 1,
     pageSize: 5,
@@ -12,19 +16,34 @@ const Phrase = () => {
   })
 
   useEffect(() => {
-    fetchPhrases()
-  }, [])
+    if (isCurrent && text) {
+      fetchPhrases(text)
+    }
+  }, [text, isCurrent, pagin.pageNum])
 
   const fetchPhrases = async () => {
-    const res = await requestPhraseList()
+    try {
+      setLoading(true)
 
-    const { list, total } = res.data
+      const res = await requestSearch({
+        ...pagin,
+        word: text,
+        type: BACK_TYPE[TAB_TYPE.Phrase]
+      })
 
-    setPhrases(list)
-    setPagin({
-      ...pagin,
-      total
-    })
+      const { list, total } = res.data
+
+      setPhrases(list)
+      setPagin({
+        ...pagin,
+        total
+      })
+    } catch (error) {
+      console.error(error)
+    } finally {
+      setLoading(false)
+    }
+
   }
 
   const handlePageChange = (pageNum) => {
@@ -32,15 +51,10 @@ const Phrase = () => {
       ...pagin,
       pageNum
     })
-
-    fetchPhrases({
-      pageNum,
-      pageSize: pagin.pageSize
-    })
   }
 
   return (
-    <div>
+    <Spin spinning={loading}>
       <List
         itemLayout="vertical"
         dataSource={phrases}
@@ -55,14 +69,14 @@ const Phrase = () => {
           <List.Item
             key={item.id}
           >
-            {item.content}
+            {item.english}
             <List.Item.Meta
-              description={item.description}
+              description={item.chinese}
             />
           </List.Item>
         )}
       />
-    </div>
+    </Spin>
   )
 }
 

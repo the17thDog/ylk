@@ -1,11 +1,15 @@
 import { useEffect, useState } from 'react'
-import { List } from 'antd'
-import { requestArticles } from '@/apis/dashboard'
+import { List, Spin } from 'antd'
+import { requestSearch } from '@/apis/dashboard'
 
 import ArticleViewer from '@/components/ArticleViewer'
+import { BACK_TYPE, TAB_TYPE } from '../../constants'
 
-const Article = () => {
+const Article = (props) => {
+  const { text, isCurrent } = props
+
   const [articles, setArticles] = useState([])
+  const [loading, setLoading] = useState(false)
   const [viewerInfo, setViewerInfo] = useState({
     visible: false,
     title: '',
@@ -17,19 +21,33 @@ const Article = () => {
   })
 
   useEffect(() => {
-    fetchArticles()
-  }, [])
+    if (isCurrent && text) {
+      fetchArticles(text)
+    }
+  }, [text, isCurrent, pagin.pageNum])
 
   const fetchArticles = async () => {
-    const res = await requestArticles()
+    try {
+      setLoading(true)
 
-    const { list, total } = res.data
+      const res = await requestSearch({
+        ...pagin,
+        word: text,
+        type: BACK_TYPE[TAB_TYPE.Article]
+      })
 
-    setArticles(list)
-    setPagin({
-      ...pagin,
-      total
-    })
+      const { list, total } = res.data
+
+      setArticles(list)
+      setPagin({
+        ...pagin,
+        total
+      })
+    } catch (error) {
+      console.error(error)
+    } finally {
+      setLoading(false)
+    }
   }
 
   const handlePageChange = (pageNum) => {
@@ -37,15 +55,9 @@ const Article = () => {
       ...pagin,
       pageNum
     })
-
-    fetchArticles({
-      pageNum,
-      pageSize: pagin.pageSize
-    })
   }
 
   const handleClickArticle = (row) => {
-  console.log('row :', row);
     setViewerInfo({
       visible: true,
       title: row.title
@@ -53,7 +65,7 @@ const Article = () => {
   }
 
   return (
-    <div>
+    <Spin spinning={loading}>
       <List
         itemLayout="vertical"
         dataSource={articles}
@@ -88,7 +100,7 @@ const Article = () => {
           setViewerInfo({ visible: false, title: '' })
         }}
       />
-    </div>
+    </Spin>
   )
 }
 

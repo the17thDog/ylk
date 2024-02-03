@@ -2,9 +2,11 @@ import { useEffect, useState } from 'react';
 import { Button, Card, Form, Input, message } from 'antd'
 import { useNavigate } from "react-router-dom"
 import { LockOutlined, UserOutlined, IdcardOutlined} from '@ant-design/icons';
+import { useDispatch } from 'react-redux';
 
 import { requireRule, passwordRule } from '@/utils/rules';
-import { requestLogin } from '@/apis/users'
+import { requestLogin, requestGetUserInfo } from '@/apis/users'
+import { setUser } from '@/store/user'
 
 import styles from './index.module.less'
 
@@ -15,6 +17,7 @@ const Mode = {
 
 const Login = () => {
   const navigate = useNavigate()
+  const dispatch = useDispatch()
   const [form] = Form.useForm()
 
   const [mode, setMode] = useState(Mode.Login)
@@ -30,7 +33,9 @@ const Login = () => {
     const formData = form.getFieldsValue()
 
     await requestLogin(formData)
+    const userRes = await requestGetUserInfo()
 
+    dispatch(setUser(userRes.data))
     message.success('登陆成功')
 
     setTimeout(() => {

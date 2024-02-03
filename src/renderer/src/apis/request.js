@@ -3,7 +3,7 @@ import axios from 'axios'
 import { message } from 'antd'
 // create an axios instance
 const service = axios.create({
-  baseURL: 'https://0be8-115-196-21-59.ngrok-free.app/',
+  baseURL: 'https://49e4-183-128-117-119.ngrok-free.app/',
   method: 'post',
   timeout: 100000 // request timeout
 })

@@ -8,6 +8,15 @@ export const TAB_TYPE = {
 }
 
 /**
+ * @enum 后端类型
+ */
+export const BACK_TYPE = {
+  [TAB_TYPE.Word]: 1,
+  [TAB_TYPE.Phrase]: 2,
+  [TAB_TYPE.Article]: 3
+}
+
+/**
  * @enum tab描述
  */
 export const TAB_LABEL = {

@@ -19,11 +19,13 @@
   "dependencies": {
     "@electron-toolkit/preload": "^2.0.0",
     "@electron-toolkit/utils": "^2.0.0",
+    "@reduxjs/toolkit": "^2.1.0",
     "antd": "^5.12.1",
     "axios": "^1.6.4",
     "clsx": "^2.0.0",
     "dayjs": "^1.11.10",
     "lodash": "^4.17.21",
+    "react-redux": "^9.1.0",
     "react-router-dom": "^6.20.1",
     "uuid": "^9.0.1"
   },

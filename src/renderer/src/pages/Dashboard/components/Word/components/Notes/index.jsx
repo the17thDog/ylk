@@ -1,62 +1,72 @@
 import { useEffect, useState } from 'react'
-import { Button, Card, List, Tag } from 'antd'
-import { requestNotes, requestDeleteNote, requestHideOrShowNote } from '@/apis/dashboard'
+import { Button, Card, List, Spin, Tag, message } from 'antd'
+import { requestNoteByWordId, requestDeleteNote, requestModifyNote } from '@/apis/note'
 import NoteEditor, { EditType } from '../NoteEditor'
 import styles from './index.module.less'
 
- const NoteType = {
-  Private: 'Private',
-  Public: 'Public'
- }
-
-const tabList = [
-  {
-    key: NoteType.Public,
-    tab: '全部',
-  },
-  {
-    key: NoteType.Private,
-    tab: '我的',
-  },
-];
+const PUBLISH_STATUS = {
+  PUBLIC: 1,
+  UN_PUBLIC: 2
+}
 
 const Notes = (props) => {
-  const { hasWord = false } = props
-  const [tabKey, setTabKey] = useState(NoteType.Public)
+  const { wordId } = props
   const [notes, setNotes] = useState([])
+  const [loading, setLoading] = useState(false)
   const [editor, setEditor] = useState({
     visible: false,
     type: EditType.Create,
-    data: ''
+    data: {}
   })
 
   useEffect(() => {
-    fetchNotes()
-  }, [])
+    if (wordId) {
+      fetchNotes()
+    } else {
+      setNotes([])
+    }
+  }, [wordId])
 
   const fetchNotes = async () => {
-    const res = await requestNotes()
+    try {
+      setLoading(true)
 
-    setNotes(res.data)
+      const res = await requestNoteByWordId(wordId)
+      let { myNotes, otherNotes } = res.data
+
+      myNotes = myNotes.map(x => ({
+        ...x,
+        isPrivate: true,
+        isShow: x.status === PUBLISH_STATUS.PUBLIC
+      }))
+      otherNotes = otherNotes.map(x => ({ ...x, isPrivate: false }))
+
+      let notes = myNotes.concat(otherNotes ?? [])
+
+      setNotes(notes)
+    } catch (error) {
+      console.error(error)
+    } finally {
+      setLoading(false)
+    }
   }
 
   const handleRecord = () => {
     setEditor({
       visible: true,
       type: EditType.Create,
-      data: ''
+      data: {
+        content: '',
+        wordId
+      }
     })
   }
-
-  // const handleSetTabKey = (key) => {
-  //   setTabKey(key)
-  // }
 
   const handleOk = () => {
     setEditor({
       visible: false,
       type: EditType.Create,
-      data: ''
+      data: {}
 
     })
     fetchNotes()
@@ -66,7 +76,11 @@ const Notes = (props) => {
     setEditor({
       visible: true,
       type: EditType.Modify,
-      data: row.content
+      data: {
+        content: row.content,
+        wordId,
+        noteId: row.id
+      }
     })
   }
 
@@ -77,22 +91,30 @@ const Notes = (props) => {
   const ExtraBtn = (
     <Button
       type='link'
-      // disabled={!hasWord}
+      disabled={!wordId}
       onClick={handleRecord}
     >记笔记</Button>
   )
 
   const handleDelete = async (row) => {
-    await requestDeleteNote(row.id)
+    await requestDeleteNote({
+      id: row.id,
+      associationId: wordId
+    })
+
+    message.success('删除成功')
 
     fetchNotes()
   }
 
   const handleHideOrShow = async (row) => {
-    await requestHideOrShowNote({
+    await requestModifyNote({
       id: row.id,
-      type: row.isShow ? 'hide' : 'show'
+      associationId: wordId,
+      status: row.isShow ? PUBLISH_STATUS.UN_PUBLIC : PUBLISH_STATUS.PUBLIC
     })
+
+    message.success(row.isShow ? '隐藏成功' : '公开成功')
 
     fetchNotes()
   }
@@ -105,13 +127,13 @@ const Notes = (props) => {
     const deleteBtn = <Button
       size='small'
       type='link'
-      onClick={handleDelete}
+      onClick={() => handleDelete(row)}
     >删除</Button>
 
     const hideBtn = <Button
       size='small'
       type='link'
-      onClick={handleHideOrShow}
+      onClick={() => handleHideOrShow(row)}
     >隐藏</Button>
 
     const editBtn = <Button
@@ -123,7 +145,7 @@ const Notes = (props) => {
     const showBtn = <Button
       size='small'
       type='link'
-      onClick={handleHideOrShow}
+      onClick={() => handleHideOrShow(row)}
     >公开</Button>
 
     return [
@@ -134,16 +156,15 @@ const Notes = (props) => {
   }
 
   return (
-    <div className={styles.note_wrapper}>
+    <Spin
+      spinning={loading}
+      className={styles.note_wrapper}
+    >
       <Card
         type="inner"
         className={styles.note_wrapper}
         title="笔记"
         extra={ExtraBtn}
-        // tabList={tabList}
-        // tabProps={{ size: 'small' }}
-        // activeTabKey={tabKey}
-        // onTabChange={handleSetTabKey}
       >
         <List
           itemLayout="vertical"
@@ -156,7 +177,7 @@ const Notes = (props) => {
               <List.Item.Meta
                 description={item.isPrivate
                   ? <div className={styles.publish_info}>
-                    <span style={{ marginRight: 12 }}>我自己</span>
+                    <span style={{ marginRight: 12 }}>{item.nickname}</span>
                     {item.isShow ? <Tag color='success'>已发布</Tag> : <Tag color='default'>未发布</Tag>}
                   </div>
                   : item.title
@@ -171,12 +192,12 @@ const Notes = (props) => {
       <NoteEditor
         open={editor.visible}
         editType={editor.type}
-        content={editor.data}
+        data={editor.data}
         top="30vh"
         onOk={handleOk}
         onCancel={handleCancel}
       />
-    </div>
+    </Spin>
   )
 }
 
