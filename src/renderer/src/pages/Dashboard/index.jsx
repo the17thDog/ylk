@@ -44,8 +44,8 @@ const DashBoard = () => {
         <Input.Search
           ref={searchRef}
           placeholder="请输入查询文本"
-          enterButton
           size="large"
+          enterButton
           style={{ width: 304 }}
           onSearch={handleSearch}
         />

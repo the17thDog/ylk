@@ -13,7 +13,6 @@ const AccountManager = () => {
   const [form] = Form.useForm()
   const [list, setList] = useState([])
   const [loading, setLoading] = useState(false)
-  const navigate = useNavigate()
   const [pagin, setPagin] = useState({
     pageNum: 1,
     pageSize: 10,
