@@ -13,7 +13,7 @@ import { requestLogout } from '@/apis/users'
 const Header = props => {
   const { useBack = false, title, hideInfo = false, bgColor = '#f8f8f8' } = props
 
-  const { setUserInfo } = useUserInfo(hideInfo)
+  // const { setUserInfo } = useUserInfo(hideInfo)
 
   const [open, setOpen] = useState(false)
   const [editor, setEditor] = useState({ visible: false })

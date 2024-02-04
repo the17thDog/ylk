@@ -11,14 +11,19 @@ import Phrase from "./components/Phrase"
 
 import styles from './index.module.less'
 
+import { requestGetUserInfo, requestLogout } from '@/apis/users'
+
 const DashBoard = () => {
   const [tabType, setTabType] = useState(TAB_TYPE.Word)
   const [currentText, setCurrentText] = useState('')
   const searchRef = useRef(null)
   const navigate = useNavigate()
 
+
   const handleSearch = async (word) => {
     setCurrentText(word)
+
+    requestGetUserInfo()
 
     if (!word) {
       message.warning('请输入查询文本')
