@@ -5,6 +5,7 @@ import { message } from 'antd'
 const service = axios.create({
   baseURL: 'https://f5ff-183-128-117-119.ngrok-free.app/',
   method: 'post',
+  withCredentials: true,
   timeout: 100000 // request timeout
 })
 
@@ -22,7 +23,7 @@ service.interceptors.response.use(
     const res = response.data
     //未登录的状态下跳转至统一平台
     if(res.errno === 2110){
-      window.location.href = '/login'
+      window.location.href = '#/login'
       return
     }
 

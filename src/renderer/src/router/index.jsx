@@ -1,4 +1,4 @@
-import { createBrowserRouter, Link } from 'react-router-dom'
+import { createHashRouter, Link } from 'react-router-dom'
 
 import Dashboard from '@/pages/Dashboard'
 import ManagerDashboard from '@/pages/ManagerDashboard'
@@ -10,7 +10,7 @@ import ArticleManager from '@/pages/ArticleManager'
 import Login from '@/pages/Login'
 import Note from '@/pages/Note'
 
-const router = createBrowserRouter([
+const router = createHashRouter([
   {
     path: "/",
     Component: Dashboard,
