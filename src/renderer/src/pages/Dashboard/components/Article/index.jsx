@@ -108,15 +108,17 @@ const Article = (props) => {
         )}
       />
 
-      <ArticleViewer
-        open={viewerInfo.visible}
-        title={viewerInfo.title}
-        data={viewerInfo.data}
-        text={text}
-        onCancel={() => {
-          setViewerInfo({ visible: false, title: '', data: {} })
-        }}
-      />
+      {viewerInfo.visible &&
+        <ArticleViewer
+          open={viewerInfo.visible}
+          title={viewerInfo.title}
+          data={viewerInfo.data}
+          text={text}
+          onCancel={() => {
+            setViewerInfo({ visible: false, title: '', data: {} })
+          }}
+        />
+      }
     </Spin>
   )
 }

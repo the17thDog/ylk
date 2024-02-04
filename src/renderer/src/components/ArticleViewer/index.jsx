@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import { Modal } from 'antd'
-import { markTextWithFlag } from '@/utils'
+import { getMarkedText } from '@/utils'
 import { requestArticle } from '@/apis/dashboard'
 import styles from './index.module.less'
 
@@ -25,7 +25,7 @@ const ArticleViewer = (props) => {
 
     setArticleInfo({
       ...articleInfo,
-      content: markTextWithFlag(article, [marKEnglish, text])
+      content: getMarkedText(article, [marKEnglish, text])
     })
   }, [list, text, marKEnglish, props.open])
 

@@ -5,22 +5,17 @@ import dayjs from 'dayjs'
 
 export const getUuid = () => v4().replace('-', '')
 
-export const markTextWithFlag = (textList, flags) => {
+export const getMarkedText = (text, flags) => {
   if (!text) {
     return ''
   }
 
   flags = [...new Set(flags)]
 
-  let res = ''
-  // 使用正则表达式查找文本中需要标记的部分
-  flags.forEach(x => {
-    const regex = new RegExp(x, 'gi');
+  const regex = new RegExp(`\\b(${flags.join('|')})\\b`, 'g');
+  const markedString = text.replace(regex, '<mark>$1</mark>');
 
-    res = text.replace(regex, match => `<mark>${match}</mark>`);
-  })
-
-  return res
+  return markedString
 }
 
 export const filterEmptyField = (obj) => {
