@@ -65,8 +65,8 @@ const Article = (props) => {
       type: 1
     })
 
-    const { english } = res.data
 
+    const { english } = res?.data ?? {}
 
     setViewerInfo({
       visible: true,

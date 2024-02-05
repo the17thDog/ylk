@@ -25,7 +25,7 @@ const ArticleViewer = (props) => {
 
     setArticleInfo({
       ...articleInfo,
-      content: getMarkedText(article, [marKEnglish, text])
+      content: getMarkedText(article, [marKEnglish, text].filter(x => x))
     })
   }, [list, text, marKEnglish, props.open])
 
