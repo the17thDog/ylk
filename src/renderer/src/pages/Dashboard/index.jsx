@@ -1,5 +1,5 @@
 import React, { useRef, useState } from "react"
-import { Tabs, Input, message } from "antd"
+import { Tabs, Input, message, Button } from "antd"
 import { useNavigate } from "react-router-dom"
 
 import Header from '@/components/Header'
@@ -37,9 +37,24 @@ const DashBoard = () => {
     setTabType(tab)
   }
 
+  const onSearch = (v) => {
+    if (!v) return
+    console.log('v :', v);
+    localStorage.setItem('url', v)
+
+    message.success('设置成功')
+  }
+
   return (
     <div className={styles.dashboard_wrapper}>
       <Header />
+
+      <div style={{ position: 'absolute', bottom: 10, left: 10 }}>
+        <Input.Search placeholder="input server host" onSearch={onSearch} style={{ width: 200 }} />
+
+        <Button type='primary' style={{ marginLeft: 10 }} onClick={() => { location.reload() }}>刷新</Button>
+      </div>
+
 
       <div className={styles.search_wrapper}>
         <Input.Search
