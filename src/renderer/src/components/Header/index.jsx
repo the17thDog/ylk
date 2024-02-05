@@ -76,7 +76,7 @@ const Header = props => {
                 shape='circle'
                 icon={<HomeTwoTone />}
                 style={{ marginRight: 12 }}
-                onClick={() => { navigate('/#/settings') }}
+                onClick={() => { navigate('/settings') }}
               />
             }
           </Tooltip>
@@ -85,7 +85,7 @@ const Header = props => {
             content={
               <div style={{ display: 'flex', flexDirection: 'column' }}>
                 <Button type='link' onClick={handleSetNickname}>修改昵称</Button>
-                <Button type='link' onClick={() => navigate('/#/note')}>我的笔记</Button>
+                <Button type='link' onClick={() => navigate('/note')}>我的笔记</Button>
                 <Button type='link' onClick={handleLogout}>退出登录</Button>
               </div>
             }
