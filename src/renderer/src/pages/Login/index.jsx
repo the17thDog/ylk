@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { Button, Card, Form, Input, message } from 'antd'
+import { Button, Card, Form, Input, message, } from 'antd'
 import { useNavigate } from "react-router-dom"
 import { LockOutlined, UserOutlined, IdcardOutlined} from '@ant-design/icons';
 import { useDispatch } from 'react-redux';
@@ -40,7 +40,7 @@ const Login = () => {
     message.success('登陆成功')
 
     setTimeout(() => {
-      navigate('/')
+      navigate('/#/')
       window.username = formData.username
     }, 1500)
   }
@@ -58,9 +58,23 @@ const Login = () => {
     setMode(Mode.Login)
   }
 
+  const onSearch = (v) => {
+    if (!v) return
+    console.log('v :', v);
+    localStorage.setItem('url', v)
+
+    message.success('设置成功')
+  }
+
   return (
     <div className={styles.login_wrapper}>
       <Header hideInfo bgColor="#fff" />
+
+      <div style={{ position: 'absolute', bottom: 10, left: 10 }}>
+        <Input.Search placeholder="input server host" onSearch={onSearch} style={{ width: 200 }} />
+
+        <Button type='primary' style={{ marginLeft: 10 }} onClick={() => { location.reload() }}>刷新</Button>
+      </div>
 
       <Card
         title={isLogin ? '欢迎使用语料库' : '重置密码'}

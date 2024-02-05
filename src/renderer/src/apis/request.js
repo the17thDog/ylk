@@ -1,16 +1,17 @@
 
 import axios from 'axios'
 import { message } from 'antd'
+
+const baseURL = localStorage.getItem('url')
 // create an axios instance
 const service = axios.create({
-  baseURL: 'https://f5ff-183-128-117-119.ngrok-free.app/',
+  baseURL,
   method: 'post',
   withCredentials: true,
   timeout: 100000 // request timeout
 })
 
 service.interceptors.request.use(
-
   config => {
     return config
   },
