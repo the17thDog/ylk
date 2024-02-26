@@ -66,7 +66,7 @@ const AccountManager = () => {
 
       <div style={{ marginBottom: 20 }}>
         <Form form={form} layout="inline">
-          <Form.Item label="短语" name="word">
+          <Form.Item name="word">
             <Input
               style={{ width: 240 }}
               allowClear

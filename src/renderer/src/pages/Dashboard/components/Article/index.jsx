@@ -100,15 +100,16 @@ const Article = (props) => {
         renderItem={(item) => (
           <List.Item
             key={item.id}
+            style={{ cursor: 'pointer' }}
+            onClick={() => handleClickArticle(item)}
           >
             <List.Item.Meta
               title={
                 <a
                   href={item.href}
-                  onClick={() => handleClickArticle(item)}
                 >{item.title}</a>
               }
-              description={'文章中出现 ' + item.times + ' 次'}
+              description={item.times + ' 次'}
             />
           </List.Item>
         )}
