@@ -95,6 +95,7 @@ const Login = () => {
                   size='large'
                   prefix={<UserOutlined className={styles.item_icon} />}
                   placeholder="请输入工号/学号"
+                  maxLength={11}
                 />
               </Form.Item>
 
