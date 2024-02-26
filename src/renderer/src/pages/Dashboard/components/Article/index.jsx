@@ -19,7 +19,8 @@ const Article = (props) => {
   const [pagin, setPagin] = useState({
     pageNum: 1,
     pageSize: 5,
-    total: 0
+    total: 0,
+    totalTimes: 0
   })
 
   useEffect(() => {
@@ -38,12 +39,13 @@ const Article = (props) => {
         type: BACK_TYPE[TAB_TYPE.Article]
       })
 
-      const { list, total } = res.data
+      const { list, total, totalTimes } = res.data
 
       setArticles(list)
       setPagin({
         ...pagin,
-        total
+        total,
+        totalTimes
       })
     } catch (error) {
       console.error(error)
@@ -80,6 +82,10 @@ const Article = (props) => {
 
   return (
     <Spin spinning={loading}>
+      {pagin.total !== 0 &&
+        <div style={{ marginBottom: 12, fontSize: 13 }}>总共出现{pagin.total}篇，总共出现{pagin.totalTimes}次</div>
+      }
+
       <List
         itemLayout="vertical"
         dataSource={articles}
