@@ -58,6 +58,10 @@ const AccountManager = () => {
       const filter = form.getFieldsValue()
       const params = { ...pagin, ...filter }
 
+      if (params.studentId === '') {
+        delete params.studentId
+      }
+
       const { data } = await requestAccounts(filterEmptyField(params))
 
       setList(data.list)

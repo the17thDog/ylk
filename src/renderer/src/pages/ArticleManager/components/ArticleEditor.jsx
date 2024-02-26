@@ -69,7 +69,7 @@ const ArticleEditor = (props) => {
           <Input
             placeholder="请输入"
             style={{ width: 300 }}
-            maxLength={20}
+            maxLength={100}
             showCount
           />
         </Form.Item>
