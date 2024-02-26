@@ -76,7 +76,7 @@ const Header = props => {
                 shape='circle'
                 icon={<HomeTwoTone />}
                 style={{ marginRight: 12 }}
-                onClick={() => { navigate('/settings') }}
+                onClick={() => { navigate('/settings/class') }}
               />
             }
           </Tooltip>
