@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react"
 import { Input, Form, Button, List, message, Breadcrumb } from "antd"
-import { useNavigate } from "react-router-dom"
 import { pick } from "lodash"
 import { SearchOutlined, DeleteOutlined } from '@ant-design/icons'
 import { requestDeleteNote, requestNotes } from "@/apis/note"

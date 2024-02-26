@@ -74,7 +74,7 @@ const NoteEditor = (props) => {
             placeholder="请输入笔记"
             rows={8}
             showCount
-            maxLength={300}
+            maxLength={1000}
           />
         </Form.Item>
       </Form>

@@ -188,7 +188,7 @@ const Notes = (props) => {
                   : item.title
                 }
               />
-              {item.content}
+              <div className={styles.content_text}>{item.content}</div>
             </List.Item>
           )}
         />
