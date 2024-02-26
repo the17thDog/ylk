@@ -76,7 +76,7 @@ const ClassEditor = (props) => {
           rules={[requireRule('班级不能为空'), classRule()]}
         >
           <Input.TextArea
-            placeholder="请输入班级，多个账号用英文逗号隔开"
+            placeholder="请输入班级，多个班级用英文逗号隔开"
             rows={8}
           />
         </Form.Item>
