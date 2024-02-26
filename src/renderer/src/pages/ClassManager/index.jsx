@@ -107,6 +107,11 @@ const ClassManager = () => {
       key: 'classNo',
     },
     {
+      title: '数量',
+      dataIndex: 'total',
+      key: 'total',
+    },
+    {
       title: '状态',
       dataIndex: 'status',
       key: 'status',
