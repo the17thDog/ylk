@@ -33,7 +33,7 @@ const Word = (props) => {
   return (
     <div className={styles.word_wrapper}>
       <Spin spinning={loading}>
-        <Card className={styles.word_text}>{ wordInfo.english || '请检索' }</Card>
+        <Card className={styles.word_text}>{ wordInfo.english || 'No data' }</Card>
       </Spin>
 
       <Notes wordId={wordInfo.id} />
