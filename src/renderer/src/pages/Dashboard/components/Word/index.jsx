@@ -22,7 +22,7 @@ const Word = (props) => {
       setLoading(true)
       const res = await requestSearch({ word, type: BACK_TYPE[TAB_TYPE.Word] })
 
-      setWordInfo(res.data ?? { english: '暂无数据' })
+      setWordInfo(res.data ?? { english: 'No Data' })
     } catch (error) {
       console.error(error)
     } finally {
