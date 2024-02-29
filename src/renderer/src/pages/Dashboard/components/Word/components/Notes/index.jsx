@@ -182,13 +182,14 @@ const Notes = (props) => {
               <List.Item.Meta
                 description={item.isPrivate
                   ? <div className={styles.publish_info}>
-                    <span style={{ marginRight: 12 }}>{item.nickname}</span>
-                    {item.isShow ? <Tag color='success'>已发布</Tag> : <Tag color='default'>未发布</Tag>}
-                  </div>
-                  : item.title
+                      <span style={{ marginRight: 12 }}>{item.nickname}</span>
+                      {item.isShow ? <Tag color='success'>已发布</Tag> : <Tag color='default'>未发布</Tag>}
+                    </div>
+                  : item.nickname
                 }
               />
               <div className={styles.content_text}>{item.content}</div>
+              <div className={styles.createTime}>{item.createTime}</div>
             </List.Item>
           )}
         />

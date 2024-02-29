@@ -3,6 +3,8 @@ import { Table, Form, Button, Upload, message } from "antd"
 import { SearchOutlined, PlusCircleTwoTone, FolderAddTwoTone } from '@ant-design/icons'
 import { requestArticles, requestDeleteArticle, requestUploadArticle } from "@/apis/articleManager"
 import { filterEmptyField, formatTime, showConfirm } from '@/utils'
+import { PHRASE_SPLITOR } from "@/constants"
+import ArticleViewer from '@/components/ArticleViewer'
 
 import ArticleEditor, { EditType } from "./components/ArticleEditor"
 
@@ -10,6 +12,8 @@ const ArticleManager = () => {
   const [form] = Form.useForm()
   const [list, setList] = useState([])
   const [loading, setLoading] = useState(false)
+  const [deleteLoading, setDeleteLoading] = useState(false)
+  const [selectedRowKeys, setSelectedRowKeys] = useState([]);
   const [editor, setEditor] = useState({
     visible: false,
     type: EditType.Create,
@@ -19,6 +23,11 @@ const ArticleManager = () => {
     pageNum: 1,
     pageSize: 10,
     total: 0
+  })
+  const [viewerInfo, setViewerInfo] = useState({
+    visible: false,
+    title: '',
+    data: {}
   })
 
   useEffect(() => {
@@ -48,7 +57,7 @@ const ArticleManager = () => {
 
   const handleDelete = async (row) => {
     await showConfirm({ content: '确认删除该文章吗？' })
-    await requestDeleteArticle(row.id)
+    await requestDeleteArticle([row.id])
 
     message.success('删除成功')
 
@@ -66,6 +75,8 @@ const ArticleManager = () => {
   }
 
   const handleChange = ({ current }) => {
+    setSelectedRowKeys([])
+
     setPagin({
       ...pagin,
       pageNum: current
@@ -76,6 +87,23 @@ const ArticleManager = () => {
     setEditor({
       ...editor,
       visible: false,
+    })
+  }
+
+  const handleView = (row) => {
+    const chineseList = row.chinese.split(PHRASE_SPLITOR)
+    const englishList = row.english.split(PHRASE_SPLITOR)
+    const list = chineseList?.map((x, index) => ({
+      chinese: x,
+      english: englishList[index]
+    }))
+
+    setViewerInfo({
+      visible: true,
+      title: row.title,
+      data: {
+        list
+      }
     })
   }
 
@@ -95,6 +123,22 @@ const ArticleManager = () => {
       type: EditType.Create,
       data: {}
     })
+  }
+
+  const handleDeleteBatch = async () => {
+    try {
+      await showConfirm({ content: '确认删除选中的文章吗？' })
+      setDeleteLoading(true)
+      await requestDeleteArticle(selectedRowKeys)
+
+      message.success('删除成功')
+      fetchList()
+      setSelectedRowKeys([])
+    } catch (error) {
+      console.error(error)
+    } finally {
+      setDeleteLoading(false)
+    }
   }
 
   const columns = [
@@ -128,11 +172,18 @@ const ArticleManager = () => {
       render(_, row) {
         return <>
           {/* <Button type="link" onClick={() => handleEdit(row)}>编辑</Button> */}
+          <Button type="link" onClick={() => handleView(row)}>查看</Button>
           <Button type="link" onClick={() => handleDelete(row)}>删除</Button>
         </>
       }
     }
   ]
+
+  const rowSelection = {
+    selectedRowKeys,
+    onChange: setSelectedRowKeys,
+  }
+  const hasSelected = selectedRowKeys.length > 0
 
   return (
     <div style={{ padding: 10 }}>
@@ -164,8 +215,24 @@ const ArticleManager = () => {
         </Form>
       </div>
 
+      <div style={{ marginBottom: 16 }}>
+        <Button
+          type="primary"
+          danger
+          onClick={handleDeleteBatch}
+          disabled={!hasSelected}
+          loading={deleteLoading}
+        >
+          删除
+        </Button>
+        <span style={{ marginLeft: 8 }}>
+          {hasSelected ? `已选择 ${selectedRowKeys.length} 列` : ''}
+        </span>
+      </div>
+
       <Table
         columns={columns}
+        rowSelection={rowSelection}
         dataSource={list}
         rowKey="id"
         loading={loading}
@@ -190,6 +257,18 @@ const ArticleManager = () => {
         }}
         onCancel={handleClose}
       />
+
+      {viewerInfo.visible &&
+        <ArticleViewer
+          open={viewerInfo.visible}
+          title={viewerInfo.title}
+          data={viewerInfo.data}
+          text=''
+          onCancel={() => {
+            setViewerInfo({ visible: false, title: '', data: {} })
+          }}
+        />
+      }
     </div>
   )
 }

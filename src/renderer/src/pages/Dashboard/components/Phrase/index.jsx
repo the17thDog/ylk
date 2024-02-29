@@ -2,6 +2,7 @@ import { List, Spin } from 'antd'
 import { useEffect, useState } from 'react'
 
 import { requestSearch } from '@/apis/dashboard'
+import { getMarkedText } from '@/utils'
 import { BACK_TYPE, TAB_TYPE } from '../../constants'
 
 const Phrase = (props) => {
@@ -70,9 +71,11 @@ const Phrase = (props) => {
           <List.Item
             key={item.id}
           >
-            {item.english}
+            <div dangerouslySetInnerHTML={{ __html: getMarkedText(item.english, [text]) }} />
             <List.Item.Meta
-              description={item.chinese}
+              description={
+                <div dangerouslySetInnerHTML={{ __html: getMarkedText(item.chinese, [text]) }} />
+              }
             />
           </List.Item>
         )}

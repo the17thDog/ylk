@@ -1,10 +1,11 @@
 import { useEffect, useState } from 'react'
 import { List, Spin } from 'antd'
 import { requestSearch } from '@/apis/dashboard'
-import { requestWords } from '@/apis/wordManager'
 
 import ArticleViewer from '@/components/ArticleViewer'
 import { BACK_TYPE, TAB_TYPE } from '../../constants'
+
+import styles from './index.module.less'
 
 const Article = (props) => {
   const { text, isCurrent } = props
@@ -75,7 +76,7 @@ const Article = (props) => {
       title: row.title,
       data: {
         list: row.articles,
-        markEnglish: english,
+        transformText: english,
       }
     })
   }
@@ -102,14 +103,16 @@ const Article = (props) => {
             key={item.id}
             style={{ cursor: 'pointer' }}
             onClick={() => handleClickArticle(item)}
+            className={styles.article_list}
           >
             <List.Item.Meta
               title={
-                <a
-                  href={item.href}
-                >{item.title}</a>
+                <div className={styles.article}>
+                  <span className={styles.times}>{item.times + ' 次'}</span>
+                  <span className={styles.split}>|</span>
+                  <a className={styles.title} href={item.href}>{item.title}</a>
+                </div>
               }
-              description={item.times + ' 次'}
             />
           </List.Item>
         )}

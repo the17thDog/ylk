@@ -19,11 +19,11 @@ export function requestCreateClass(params) {
   })
 }
 
-export function requestDeleteClass(id) {
+export function requestDeleteClass(ids) {
   return request({
     url: '/class/delete',
     data: {
-      id
+      ids
     }
   })
 }

@@ -14,11 +14,11 @@ export function requestCreatePhrase(data) {
   })
 }
 
-export function requestDeletePhrase(id) {
+export function requestDeletePhrase(ids) {
   return request({
     url: '/phrase/delete',
     data: {
-      id
+      ids
     }
   })
 }

@@ -47,7 +47,7 @@ export function accountRule() {
         return Promise.resolve()
       }
 
-      const pattern = /^(\w{1,11})(,\w{1,11})*$/
+      const pattern = /^(\w{1,11})(,\w{0,11})*$/
       const match = val.match(pattern)
 
       return match ? Promise.resolve() : Promise.reject()

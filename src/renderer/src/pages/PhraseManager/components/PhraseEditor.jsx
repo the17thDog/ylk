@@ -29,8 +29,6 @@ const PhraseEditor = (props) => {
   }, [open])
 
   const handleOk = async () => {
-    console.log(' form.getFieldsValue():', form.getFieldsValue());
-
     await form.validateFields()
     await requestCreatePhrase({
       ...form.getFieldsValue()

@@ -20,6 +20,8 @@ const ClassManager = () => {
   const [form] = Form.useForm()
   const [list, setList] = useState([])
   const [loading, setLoading] = useState(false)
+  const [deleteLoading, setDeleteLoading] = useState(false)
+  const [selectedRowKeys, setSelectedRowKeys] = useState([]);
   const [editor, setEditor] = useState({
     visible: false,
     type: EditType.Create,
@@ -72,7 +74,7 @@ const ClassManager = () => {
 
   const handleDelete = async (row) => {
     await showConfirm({ content: '该班级下所有账号也会被删除，确认要删除该班级吗？' })
-    await requestDeleteClass(row.id)
+    await requestDeleteClass([row.id])
 
     message.success('删除成功')
     fetchList()
@@ -83,6 +85,22 @@ const ClassManager = () => {
       ...pagin,
       pageNum: current
     })
+  }
+
+  const handleDeleteBatch = async () => {
+    try {
+      await showConfirm({ content: '该班级下所有账号也会被删除，确认删除选中的班级吗？' })
+      setDeleteLoading(true)
+      await requestDeleteClass(selectedRowKeys)
+
+      message.success('删除成功')
+      setSelectedRowKeys([])
+      fetchList()
+    } catch (error) {
+      console.error(error)
+    } finally {
+      setDeleteLoading(false)
+    }
   }
 
   const handleClose = () => {
@@ -139,6 +157,12 @@ const ClassManager = () => {
     }
   ]
 
+  const rowSelection = {
+    selectedRowKeys,
+    onChange: setSelectedRowKeys,
+  }
+  const hasSelected = selectedRowKeys.length > 0
+
   return (
     <div style={{ padding: 10 }}>
       <div style={{ marginBottom: 20 }}>
@@ -152,11 +176,12 @@ const ClassManager = () => {
                 { value: Status.Open, label: '启用' },
                 { value: Status.Disabled, label: '禁用' },
               ]}
+              onChange={fetchList}
             />
           </Form.Item>
 
           <Form.Item>
-            <Button type="primary" icon={<SearchOutlined />} onClick={fetchList}>搜索</Button>
+            {/* <Button type="primary" icon={<SearchOutlined />} onClick={fetchList}>搜索</Button> */}
           </Form.Item>
           <Form.Item>
             <Button icon={<PlusCircleTwoTone />} onClick={handleCreate}>添加</Button>
@@ -164,8 +189,24 @@ const ClassManager = () => {
         </Form>
       </div>
 
+      <div style={{ marginBottom: 16 }}>
+        <Button
+          type="primary"
+          danger
+          onClick={handleDeleteBatch}
+          disabled={!hasSelected}
+          loading={deleteLoading}
+        >
+          删除
+        </Button>
+        <span style={{ marginLeft: 8 }}>
+          {hasSelected ? `已选择 ${selectedRowKeys.length} 列` : ''}
+        </span>
+      </div>
+
       <Table
         columns={columns}
+        rowSelection={rowSelection}
         dataSource={list}
         rowKey="id"
         loading={loading}

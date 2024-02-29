@@ -5,14 +5,21 @@ import { requestPhrases, requestDeletePhrase, requestUploadPhrase } from "@/apis
 import { filterEmptyField, formatTime, showConfirm } from '@/utils'
 
 import PhraseEditor, { EditType } from "./components/PhraseEditor"
+import PhraseViewer from './components/PhraseViewer'
 
 const PhraseManager = () => {
   const [form] = Form.useForm()
   const [list, setList] = useState([])
   const [loading, setLoading] = useState(false)
+  const [deleteLoading, setDeleteLoading] = useState(false)
+  const [selectedRowKeys, setSelectedRowKeys] = useState([])
   const [editor, setEditor] = useState({
     visible: false,
     type: EditType.Create,
+    data: {}
+  })
+  const [viewer, setViewer] = useState({
+    visible: false,
     data: {}
   })
   const [pagin, setPagin] = useState({
@@ -46,24 +53,40 @@ const PhraseManager = () => {
     }
   }
 
-  const handleDelete = async (row) => {
-    await showConfirm({ content: '确认删除该短语吗？' })
-    await requestDeletePhrase()
+  const handleDeleteBatch = async () => {
+    try {
+      await showConfirm({ content: '确认删除选中的短语吗？' })
+      setDeleteLoading(true)
+      await requestDeletePhrase(selectedRowKeys)
 
-    fetchList()
+      fetchList()
+      message.success('删除成功')
+      setSelectedRowKeys([])
+    } catch (error) {
+      console.error(error)
+    } finally {
+      setDeleteLoading(false)
+    }
   }
 
-  const handleEdit = (row) => {
-    setEditor({
+  const handleDelete = async (row) => {
+    await showConfirm({ content: '确认删除该短语吗？' })
+    await requestDeletePhrase([row.id])
+
+    fetchList()
+    message.success('删除成功')
+  }
+
+  const handleView = (row) => {
+    setViewer({
       visible: true,
-      type: EditType.Modify,
-      data: {
-        content: row.content
-      }
+      data: row
     })
   }
 
   const handleChange = ({ current }) => {
+    setSelectedRowKeys([])
+
     setPagin({
       ...pagin,
       pageNum: current
@@ -118,12 +141,19 @@ const PhraseManager = () => {
       key: 'action',
       render(_, row) {
         return <>
-          {/* <Button type="link" onClick={() => handleEdit(row)}>编辑</Button> */}
+          <Button type="link" onClick={() => handleView(row)}>查看</Button>
           <Button type="link" onClick={() => handleDelete(row)}>删除</Button>
         </>
       }
     }
   ]
+
+  const rowSelection = {
+    selectedRowKeys,
+    onChange: setSelectedRowKeys,
+  }
+  const hasSelected = selectedRowKeys.length > 0
+
 
   return (
     <div style={{ padding: 10 }}>
@@ -155,8 +185,24 @@ const PhraseManager = () => {
         </Form>
       </div>
 
+      <div style={{ marginBottom: 16 }}>
+        <Button
+          type="primary"
+          danger
+          onClick={handleDeleteBatch}
+          disabled={!hasSelected}
+          loading={deleteLoading}
+        >
+          删除
+        </Button>
+        <span style={{ marginLeft: 8 }}>
+          {hasSelected ? `已选择 ${selectedRowKeys.length} 列` : ''}
+        </span>
+      </div>
+
       <Table
         columns={columns}
+        rowSelection={rowSelection}
         dataSource={list}
         rowKey="id"
         loading={loading}
@@ -180,6 +226,17 @@ const PhraseManager = () => {
           handleClose()
         }}
         onCancel={handleClose}
+      />
+
+      <PhraseViewer
+        open={viewer.visible}
+        data={viewer.data}
+        top="30vh"
+        onCancel={() => setViewer({
+          visible: false,
+          data: {}
+        })}
+
       />
     </div>
   )

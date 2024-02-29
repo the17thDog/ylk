@@ -6,7 +6,7 @@ import styles from './index.module.less'
 
 const ArticleViewer = (props) => {
   const { title, data, text, searchText, id, ...modalProps } = props
-  const { list, marKEnglish } = data
+  const { list, transformText } = data
 
   const [articleInfo, setArticleInfo] = useState({
     title: '',
@@ -25,9 +25,9 @@ const ArticleViewer = (props) => {
 
     setArticleInfo({
       ...articleInfo,
-      content: getMarkedText(article, [marKEnglish, text].filter(x => x))
+      content: getMarkedText(article, [transformText, text].filter(x => x))
     })
-  }, [list, text, marKEnglish, props.open])
+  }, [list, text, transformText, props.open])
 
   const handleOk = () => {
 

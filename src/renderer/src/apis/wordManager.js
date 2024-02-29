@@ -16,11 +16,11 @@ export function requestCreateWord(data) {
   })
 }
 
-export function requestDeleteWord(id) {
+export function requestDeleteWord(ids) {
   return request({
     url: '/word/delete',
     data: {
-      id
+      ids
     }
   })
 }

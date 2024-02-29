@@ -33,11 +33,11 @@ export function requestModifyAccount(params) {
   })
 }
 
-export function requestDeleteAccount(id) {
+export function requestDeleteAccount(ids) {
   return request({
     url: '/user/deleteAccountInfo',
     data: {
-      id,
+      ids,
     }
   })
 }

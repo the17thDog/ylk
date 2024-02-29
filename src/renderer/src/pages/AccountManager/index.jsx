@@ -21,6 +21,8 @@ const AccountManager = () => {
   const [form] = Form.useForm()
   const [list, setList] = useState([])
   const [classList, setClassList] = useState([])
+  const [deleteLoading, setDeleteLoading] = useState(false)
+  const [selectedRowKeys, setSelectedRowKeys] = useState([]);
   const [loading, setLoading] = useState(false)
   const [editor, setEditor] = useState({
     visible: false,
@@ -94,11 +96,27 @@ const AccountManager = () => {
 
   const handleDelete = async (row) => {
     await showConfirm({ content: '确认删除该账号吗？' })
-    await requestDeleteAccount(row.id)
+    await requestDeleteAccount([row.id])
 
     message.success('删除成功')
 
     fetchList()
+  }
+
+  const handleDeleteBatch = async () => {
+    try {
+      await showConfirm({ content: '确认删除选中的账号吗？' })
+      setDeleteLoading(true)
+      await requestDeleteAccount(selectedRowKeys)
+
+      message.success('删除成功')
+      setSelectedRowKeys([])
+      fetchList()
+    } catch (error) {
+      console.error(error)
+    } finally {
+      setDeleteLoading(false)
+    }
   }
 
   const handleEdit = (row) => {
@@ -110,6 +128,8 @@ const AccountManager = () => {
   }
 
   const handleChange = ({ current }) => {
+    setSelectedRowKeys([])
+
     setPagin({
       ...pagin,
       pageNum: current
@@ -210,13 +230,19 @@ const AccountManager = () => {
     }
   ]
 
+  const rowSelection = {
+    selectedRowKeys,
+    onChange: setSelectedRowKeys,
+  }
+  const hasSelected = selectedRowKeys.length > 0
+
   return (
     <div style={{ padding: 10 }}>
       <div style={{ marginBottom: 20 }}>
         <Form form={form} layout="inline">
           <Form.Item label="状态" name="status">
             <Select
-              style={{ width: 180 }}
+              style={{ width: 140 }}
               allowClear
               placeholder="请选择"
               options={[
@@ -228,7 +254,7 @@ const AccountManager = () => {
 
           <Form.Item label="班级" name="classId">
             <Select
-              style={{ width: 180 }}
+              style={{ width: 140 }}
               allowClear
               placeholder="请选择"
               options={classList.map(x => ({ value: x.id, label: x.className  }))}
@@ -237,7 +263,7 @@ const AccountManager = () => {
 
           <Form.Item label="账号" name="studentId">
             <Input
-              style={{ width: 180 }}
+              style={{ width: 140 }}
               allowClear
               placeholder="请输入账号"
             />
@@ -261,8 +287,24 @@ const AccountManager = () => {
         </Form>
       </div>
 
+      <div style={{ marginBottom: 16 }}>
+        <Button
+          type="primary"
+          danger
+          onClick={handleDeleteBatch}
+          disabled={!hasSelected}
+          loading={deleteLoading}
+        >
+          删除
+        </Button>
+        <span style={{ marginLeft: 8 }}>
+          {hasSelected ? `已选择 ${selectedRowKeys.length} 列` : ''}
+        </span>
+      </div>
+
       <Table
         columns={columns}
+        rowSelection={rowSelection}
         dataSource={list}
         loading={loading}
         rowKey="id"

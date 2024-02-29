@@ -17,11 +17,11 @@ export function requestCreateArticle(params) {
   })
 }
 
-export function requestDeleteArticle(id) {
+export function requestDeleteArticle(ids) {
   return request({
     url: '/article/delete',
     data: {
-      id
+      ids
     }
   })
 }

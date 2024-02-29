@@ -9,6 +9,8 @@ import WordEditor, { EditType } from "./components/WordEditor"
 const WordManager = () => {
   const [form] = Form.useForm()
   const [loading, setLoading] = useState(false)
+  const [deleteLoading, setDeleteLoading] = useState(false)
+  const [selectedRowKeys, setSelectedRowKeys] = useState([])
   const [list, setList] = useState([])
   const [editor, setEditor] = useState({
     visible: false,
@@ -56,9 +58,26 @@ const WordManager = () => {
     fetchList()
   }
 
+  const handleDeleteBatch = async () => {
+    try {
+      await showConfirm({ content: '确认删除选中的单词吗？' })
+      setDeleteLoading(true)
+      await requestDeleteWord(selectedRowKeys)
+
+      fetchList()
+      message.success('删除成功')
+      setSelectedRowKeys([])
+    } catch (error) {
+      console.error(error)
+    } finally {
+      setDeleteLoading(false)
+    }
+  }
+
+
   const handleDelete = async (row) => {
     await showConfirm({ content: '确认删除该单词吗？' })
-    await requestDeleteWord(row.id)
+    await requestDeleteWord([row.id])
 
     message.success('删除成功')
     fetchList()
@@ -75,6 +94,8 @@ const WordManager = () => {
   }
 
   const handleChange = ({ current }) => {
+    setSelectedRowKeys([])
+
     setPagin({
       ...pagin,
       pageNum: current
@@ -95,6 +116,13 @@ const WordManager = () => {
       data: {}
     })
   }
+
+  const rowSelection = {
+    selectedRowKeys,
+    onChange: setSelectedRowKeys,
+  }
+  const hasSelected = selectedRowKeys.length > 0
+
 
   return (
     <div style={{ padding: 10 }}>
@@ -126,8 +154,24 @@ const WordManager = () => {
         </Form>
       </div>
 
+      <div style={{ marginBottom: 16 }}>
+        <Button
+          type="primary"
+          danger
+          onClick={handleDeleteBatch}
+          disabled={!hasSelected}
+          loading={deleteLoading}
+        >
+          删除
+        </Button>
+        <span style={{ marginLeft: 8 }}>
+          {hasSelected ? `已选择 ${selectedRowKeys.length} 列` : ''}
+        </span>
+      </div>
+
       <Table
         rowKey="id"
+        rowSelection={rowSelection}
         columns={[
           {
             title: '英文',
@@ -141,6 +185,7 @@ const WordManager = () => {
           },
           {
             title: '添加时间',
+            width: 140,
             dataIndex: 'createTime',
             key: 'createTime',
             render: (_, row) =>  formatTime(row.createTime)

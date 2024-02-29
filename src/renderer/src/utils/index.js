@@ -1,5 +1,5 @@
 import { v4 } from 'uuid'
-import { isNil } from 'lodash'
+import { isEmpty, isNil } from 'lodash'
 import { Modal } from 'antd'
 import dayjs from 'dayjs'
 
@@ -11,9 +11,14 @@ export const getMarkedText = (text, flags) => {
   }
 
   flags = [...new Set(flags)]
+  flags = flags.filter(x => x)
 
-  const regex = new RegExp(`\\b(${flags.join('|')})\\b`, 'g');
-  const markedString = text.replace(regex, '<mark>$1</mark>');
+  if (isEmpty(flags)) {
+    return text
+  }
+
+  const pattern = new RegExp(flags.join('|'), 'g');
+  const markedString = text.replace(pattern, '<mark>$&</mark>');
 
   return markedString
 }
@@ -60,4 +65,10 @@ export const formatTime = v => {
   if (!v) return '-'
 
   return dayjs(v).format('YYYY-MM-DD')
+}
+
+export function hasChinese(text) {
+  // 使用正则表达式判断是否包含中文字符
+  const chineseRegex = /[\u4e00-\u9fa5]/;
+  return chineseRegex.test(text);
 }

@@ -39,7 +39,6 @@ const DashBoard = () => {
 
   const onSearch = (v) => {
     if (!v) return
-    console.log('v :', v);
     localStorage.setItem('url', v)
 
     message.success('设置成功')
