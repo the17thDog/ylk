@@ -45,7 +45,7 @@ const AccountManager = () => {
 
 
   const handleDelete = async (row) => {
-    await showConfirm({ content: '确认删除该账号吗？' })
+    await showConfirm({ content: '确认删除该笔记吗？' })
     await requestDeleteNote(pick(row, ['id', 'associationId']))
 
     message.success('删除成功')
