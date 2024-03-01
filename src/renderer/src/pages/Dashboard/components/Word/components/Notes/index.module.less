@@ -3,16 +3,34 @@
 
   .content_text {
     word-break: break-all;
+    color: rgba(0, 0, 0, 0.6);
   }
 
   .publish_info {
     display: flex;
     justify-content: space-between;
+    align-items: baseline;
+
+    :global(.ant-tag) {
+      height: 24px;
+    }
+
+    .left {
+      display: flex;
+      align-items: baseline;
+    }
+  }
+
+  .nickname {
+    font-size: 14px;
+    font-weight: bold;
+    margin-right: 12px;
+    color: #000;
   }
 
   .createTime {
     font-size: 13px;
-    color: rgba(0, 0, 0, 0.45);
+    color: rgba(0, 0, 0, 0.35);
     margin-top: 12px;
     text-align: right;
   }

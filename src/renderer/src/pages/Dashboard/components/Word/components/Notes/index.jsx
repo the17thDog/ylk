@@ -180,16 +180,19 @@ const Notes = (props) => {
               actions={renderActions(item)}
             >
               <List.Item.Meta
-                description={item.isPrivate
-                  ? <div className={styles.publish_info}>
-                      <span style={{ marginRight: 12 }}>{item.nickname}</span>
-                      {item.isShow ? <Tag color='success'>已发布</Tag> : <Tag color='default'>未发布</Tag>}
+                description={
+                  <div className={styles.publish_info}>
+                    <div className={styles.left}>
+                      <span className={styles.nickname}>{item.nickname}</span>
+                      <div className={styles.createTime}>{item.createTime}</div>
                     </div>
-                  : item.nickname
+                    {item.isPrivate &&
+                      (item.isShow ? <Tag color='success'>已发布</Tag> : <Tag color='default'>未发布</Tag>)
+                    }
+                  </div>
                 }
               />
               <div className={styles.content_text}>{item.content}</div>
-              <div className={styles.createTime}>{item.createTime}</div>
             </List.Item>
           )}
         />
