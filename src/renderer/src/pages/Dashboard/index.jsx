@@ -19,6 +19,10 @@ const DashBoard = () => {
 
 
   const handleSearch = async (word) => {
+    if (word) {
+      word = word.trim()
+    }
+
     setCurrentText(word)
 
     if (!word) {
@@ -31,7 +35,11 @@ const DashBoard = () => {
   }
 
   const handleSetTab = (tab) => {
-    const text = searchRef.current?.input.value
+    let text = searchRef.current?.input.value
+
+    if (text) {
+      text = text.trim()
+    }
 
     setCurrentText(text)
     setTabType(tab)
