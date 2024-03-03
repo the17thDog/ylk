@@ -53,10 +53,10 @@ const AccountManager = () => {
     fetchList()
   }
 
-  const handlePageChange = ({ current }) => {
+  const handlePageChange = (pageNum) => {
     setPagin({
       ...pagin,
-      pageNum: current
+      pageNum
     })
   }
 
